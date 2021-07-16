@@ -1,0 +1,545 @@
+<template>
+ <div>
+  <div class="container">
+   <h5 class="text-primary pt-4">Car Management</h5>
+   <p class="text-muted">Here are the list of your cars</p>
+   <div class="row g-0 mt-3">
+    <div class="card p-5 mb-4">
+     <div class="d-flex align-items-center">
+       <div class="d-flex flex-column me-auto mt-2">
+         <h5 class="text-violet fw-bold">Cars</h5>
+         <p class="mb-4"><small>Manage your cars below</small></p>
+       </div>
+       <div class="d-flex flex-column mt-2">
+         <button v-on:click.prevent="$bvModal.show('newCarModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Car</button>
+       </div>
+     </div>
+     <div class="d-flex justify-content-end mt-2">
+       <div class="col-6 col-sm-5 col-md-5 col-lg-4 col-xl-3">
+         <div class="input-group mb-3">
+           <input type="text" v-model="searchcar" class="form-control" id="floatingSearch" placeholder="Search here">
+           <button @click.prevent="" class="btn btn-primary"><i class="bi bi-search"></i></button>
+         </div>
+       </div>
+     </div>
+     <div class="table-responsive mt-4">
+      <b-skeleton-table
+         v-if="initialLoading"
+         :rows="4"
+         :columns="6"
+         :table-props="{ bordered: false, striped: false }"
+       ></b-skeleton-table>
+      <table v-if="!initialLoading" class="table table-hover">
+        <caption>Total Cars: {{cars.total}}</caption>
+        <thead>
+          <tr >
+            <th scope="col">Image</th>
+            <th scope="col" >Brand</th>
+            <th scope="col" >Model</th>
+            <th scope="col" class="text-nowrap">Car Description</th>
+            <th scope="col" class="text-nowrap">Transmission</th>
+            <th scope="col">Year</th>
+            <th scope="col">Seats</th>
+            <th scope="col">Rate/Day</th>
+            <th scope="col" class="text-nowrap">With Driver</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(car, i) in cars.data" :key="i">
+            <td>
+             <img :src="'https://carrental-cloudbased-be.herokuapp.com/uploads/'+ car.image" class="w-75" alt="">
+            </td>
+            <td>{{car.brand.brand}}</td>
+            <td>{{car.model}}</td>
+            <td class="w-75">{{car.description}}</td>
+            <td class="text-nowrap">{{car.transmission.type}}</td>
+            <td>{{car.year}}</td>
+            <td>{{car.seats}}</td>
+            <td>{{car.rate.per_day}}</td>
+            <td>{{car.rate.with_driver}}</td>
+            <td class="text-nowrap">
+             <a v-on:click.prevent="$bvModal.show('updateCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href=""><i class="bi bi-pencil"></i> Update</a>
+             <a v-on:click.prevent="id = car.id; $bvModal.show('deleteCarModal')" class="btn btn-danger btn-sm" href=""><i class="bi bi-x"></i> Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+     </div>
+     <div class="row mt-3" v-if="cars.data">
+       <pagination :showDisabled="true" :align="'right'" :data="cars" @pagination-change-page="carSearch">
+         <span slot="prev-nav">&laquo;</span>
+         <span slot="next-nav">&raquo;</span>
+       </pagination>
+     </div>
+    </div>
+   </div>
+
+   <h5 class="text-primary pt-4">Car Brand Management</h5>
+   <p class="text-muted">List of car brands</p>
+   <div class="row g-0 mt-3">
+    <div class="card p-5 mb-4">
+     <div class="d-flex align-items-center">
+       <div class="d-flex flex-column me-auto mt-2">
+         <h5 class="text-violet fw-bold">Car Brands</h5>
+         <p class="mb-4"><small>Manage your car brand below</small></p>
+       </div>
+       <div class="d-flex flex-column mt-2">
+         <button v-on:click.prevent="$bvModal.show('newCarBrandModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Brand</button>
+       </div>
+     </div>
+     <div class="d-flex justify-content-end mt-2">
+       <div class="col-6 col-sm-5 col-md-5 col-lg-4 col-xl-3">
+         <div class="input-group mb-3">
+           <input type="text" v-model="searchbrand" class="form-control" id="floatingSearch" placeholder="Search here">
+           <button @click.prevent="searchBrand()" class="btn btn-primary"><i class="bi bi-search"></i></button>
+         </div>
+       </div>
+     </div>
+     <div class="table-responsive mt-4">
+      <b-skeleton-table
+         v-if="initialLoading"
+         :rows="4"
+         :columns="6"
+         :table-props="{ bordered: false, striped: false }"
+       ></b-skeleton-table>
+      <table v-if="!initialLoading" class="table table-hover">
+        <caption>Total Brands: {{brands.total}}</caption>
+        <thead>
+          <tr>
+            <th scope="col" >Brand</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(brand, i) in brands.data" :key="i">
+            <td>{{brand.brand}}</td>
+            <td class="text-nowrap">
+             <a v-on:click.prevent="$bvModal.show('updateCarBrandModal'); id = brand.id; updatecarbrand = JSON.parse(JSON.stringify(brand));" class="btn btn-primary btn-sm me-2" href=""><i class="bi bi-pencil"></i> Update</a>
+             <a v-on:click.prevent="id = brand.id; $bvModal.show('deleteCarBrandModal')" class="btn btn-danger btn-sm" href=""><i class="bi bi-x"></i> Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+     </div>
+     <div class="row mt-3" v-if="brands.data">
+       <pagination :showDisabled="true" :align="'right'" :data="brands" @pagination-change-page="brandSearch">
+         <span slot="prev-nav">&laquo;</span>
+         <span slot="next-nav">&raquo;</span>
+       </pagination>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <!-- CAR --->
+  <b-modal id="newCarModal"  scrollable centered title="New Car">
+   <div class="ps-5 pe-5">
+    <label for="brand">Image</label>
+    <VueFileAgent
+            ref="vueFileAgent"
+            @select="filesSelected($event)"
+            :multiple="false"
+            :maxSize="'3MB'"
+            :deletable="true"
+            :accept="'image/*,'"
+            :theme="'list'"
+            @beforedelete="onBeforeDelete($event)"
+            @delete="fileDeleted($event)"
+            :errorText="{
+              type: 'Invalid file type. Only image file is allowed',
+              size: 'Image should not exceed 5MB in size',
+            }"
+            v-model="fileRecords"
+          ></VueFileAgent>
+    <label for="brand">Select Brand</label>
+    <select id="brand" v-model="car.brand" class="form-select">
+      <option :value="brand.id" v-for="(brand, i) in allbrands" :key="i">{{brand.brand}}</option>
+    </select>
+    <label for="transmission">Transmission</label>
+    <select id="transmission" v-model="car.transmission_type" class="form-select">
+      <option :value="trans.id" v-for="(trans, i) in transmission" :key="i">{{trans.type}}</option>
+    </select>
+    <p>Car Model</p>
+    <input v-model="car.model" id="carmodel" type="text" class="form-control" placeholder="" aria-label="Car">
+    <p>Description</p>
+    <textarea v-model="car.description" id="cardesc" type="text" class="form-control" placeholder="" aria-label="Car" row = "3"></textarea>
+    <div class="row">
+      <div class="col-6">
+        <p>Year</p>
+        <input v-model="car.year" id="carmodel" type="number" class="form-control" placeholder="" aria-label="Year">
+      </div>
+      <div class="col-6">
+        <p>Seats</p>
+        <input v-model="car.seats" id="carseats" type="number" class="form-control" placeholder="" aria-label="Seats">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <p>Rate/Day</p>
+        <input v-model="car.per_day" id="perday" type="number" class="form-control" placeholder="" aria-label="Per Day Rate">
+      </div>
+      <div class="col-6">
+        <p>With Driver</p>
+        <input v-model="car.with_driver" id="withdriver" type="number" class="form-control" placeholder="" aria-label="With Driver Rate">
+      </div>
+    </div>
+   </div>
+   <template #modal-footer = {cancel} >
+     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" size="sm" v-on:click.prevent="saveCar" :disabled="isLoading">
+       Save Car
+     </b-button>
+   </template>
+  </b-modal>
+
+  <!-- UPDATE CAR --->
+  <b-modal id="updateCarModal"  scrollable centered title="Update Car">
+   <div class="ps-5 pe-5">
+    <label for="brand">New Image</label>
+    <p class="text-muted"><small>Leave blank if you dont want any changes</small></p>
+    <VueFileAgent
+            ref="vueFileAgent"
+            @select="filesSelected($event)"
+            :multiple="false"
+            :maxSize="'3MB'"
+            :deletable="true"
+            :accept="'image/*,'"
+            :theme="'list'"
+            @beforedelete="onBeforeDelete($event)"
+            @delete="fileDeleted($event)"
+            :errorText="{
+              type: 'Invalid file type. Only image file is allowed',
+              size: 'Image should not exceed 5MB in size',
+            }"
+            v-model="fileRecords"
+          ></VueFileAgent>
+    <label for="brand" class="mt-3">Select Brand</label>
+    <select id="brand" v-model="carupdate.car_brand_id" class="form-select">
+      <option :value="brand.id" v-for="(brand, i) in allbrands" :key="i">{{brand.brand}}</option>
+    </select>
+    <label for="transmission">Transmission</label>
+    <select id="transmission" v-model="carupdate.transmission_type_id" class="form-select">
+      <option :value="trans.id" v-for="(trans, i) in transmission" :key="i">{{trans.type}}</option>
+    </select>
+    <p>Car Model</p>
+    <input v-model="carupdate.model" id="carmodel" type="text" class="form-control" placeholder="" aria-label="Car">
+    <p>Description</p>
+    <textarea v-model="carupdate.description" id="cardesc" type="text" class="form-control" placeholder="" aria-label="Car" row = "3"></textarea>
+    <div class="row">
+      <div class="col-6">
+        <p>Year</p>
+        <input v-model="carupdate.year" id="carmodel" type="number" class="form-control" placeholder="" aria-label="Year">
+      </div>
+      <div class="col-6">
+        <p>Seats</p>
+        <input v-model="carupdate.seats" id="carseats" type="number" class="form-control" placeholder="" aria-label="Seats">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <p>Rate/Day</p>
+        <input v-model="carupdate.rate.per_day" id="carmodel" type="number" class="form-control" placeholder="" aria-label="Year">
+      </div>
+      <div class="col-6">
+        <p>With Driver</p>
+        <input v-model="carupdate.rate.with_driver" id="carseats" type="number" class="form-control" placeholder="" aria-label="Seats">
+      </div>
+    </div>
+   </div>
+   <template #modal-footer = {cancel} >
+     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" size="sm" v-on:click.prevent="updateCar" :disabled="isLoading">
+       Update Car
+     </b-button>
+   </template>
+  </b-modal>
+
+   <!-- DELETE CAR MODAL --->
+  <b-modal id="deleteCarModal" centered title="Confirm Delete">
+    <p class="">Deleting a car will also delete its record. Are you sure you want to delete this?</p>
+    <template #modal-footer = {cancel} >
+      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+      <b-button variant="danger" size="sm" v-on:click.prevent="deleteCar">
+        Delete
+      </b-button>
+    </template>
+   </b-modal>
+  
+  <!-- CAR BRAND --->
+  <b-modal id="newCarBrandModal"  scrollable centered title="Enter Car Brand">
+    <input v-model="carbrand.brand" id="carbrand" type="text" class="form-control" placeholder="" aria-label="Middle name">
+   <template #modal-footer = {cancel} >
+     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" size="sm" v-on:click.prevent="saveBrand" :disabled="isLoading">
+       Save Brand
+     </b-button>
+   </template>
+  </b-modal>
+
+  <!-- UPDATE CAR BRAND --->
+  <b-modal id="updateCarBrandModal"  scrollable centered title="Update Car Brand">
+    <input v-model="updatecarbrand.brand" id="carbrand" type="text" class="form-control" placeholder="" aria-label="Car Brand">
+   <template #modal-footer = {cancel} >
+     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" size="sm" v-on:click.prevent="updateCarBrand" :disabled="isLoading">
+       Update Brand
+     </b-button>
+   </template>
+  </b-modal>
+
+  <!-- DELETE MODAL - CARBRAND --->
+  <b-modal id="deleteCarBrandModal" centered title="Confirm Delete">
+    <p class="">Deleting a car brand will also delete its record. Are you sure you want to delete this?</p>
+    <template #modal-footer = {cancel} >
+      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
+      <b-button variant="danger" size="sm" v-on:click.prevent="deleteCarBrand">
+        Delete
+      </b-button>
+    </template>
+   </b-modal>
+ </div>
+</template>
+<script>
+import {mapState} from 'vuex';
+export default {
+  data(){
+   return {
+     carbrand: {
+       brand: '',
+     },
+     updatecarbrand: '',
+     isLoading: false,
+     initialLoading: false,
+     searchbrand: '',
+     searchcar: '',
+     id: '',
+     isSearching: false,
+     car: {
+       brand: '',
+       model: '',
+       description: '',
+       transmission_type: '',
+       year: '',
+       seats: '',
+       image: '',
+       per_day: '',
+       with_driver: '',
+     },
+     fileRecords: [],
+     fileRecordsForUpload: [],
+     carupdate: {
+       rate: {
+         per_day: '',
+         with_driver: '',
+       }
+     },
+   }
+  },
+  async mounted(){
+    this.initialLoading = true
+    await this.$store.dispatch('auth/checkAdminUser')
+    this.getCarBrands()
+    this.getCars()
+    await this.$store.dispatch('cars/getAllCarBrands');
+    await this.$store.dispatch('cars/getTransmissions');
+    this.initialLoading = false
+  },
+  methods: {
+    filesSelected: function(fileRecordsNewlySelected) {
+     var validFileRecords = fileRecordsNewlySelected.filter(
+       (fileRecord) => !fileRecord.error
+     );
+     this.fileRecordsForUpload = this.fileRecordsForUpload.concat(
+       validFileRecords
+     );
+     },
+     fileDeleted: function(fileRecord) {
+       var i = this.fileRecordsForUpload.indexOf(fileRecord);
+       if (i !== -1) {
+         this.fileRecordsForUpload.splice(i, 1);
+       }
+     },
+     onBeforeDelete: function(fileRecord) {
+       var i = this.fileRecordsForUpload.indexOf(fileRecord);
+       if (i !== -1) {
+         this.fileRecordsForUpload.splice(i, 1);
+        var k = this.fileRecords.indexOf(fileRecord);
+         if (k !== -1) this.fileRecords.splice(k, 1);
+       }
+     },
+    async saveCar(){
+      if (this.fileRecordsForUpload.length == 0) return this.$toast.error("An Image is required");
+      if(this.car.brand == '') return this.$toast.error('Car Brand is required')
+      if(this.car.model == '') return this.$toast.error('Car model is required')
+      if(this.car.description == '') return this.$toast.error('Description is required')
+      if(this.car.transmission_type == '') return this.$toast.error('Transmission Type is required')
+      if(this.car.year == '') return this.$toast.error('Year is required')
+      if(this.car.with_driver == '') return this.$toast.error('Rate for with driver is required')
+      if(this.car.per_day == '') return this.$toast.error('Rate per day is required')
+      if(this.car.seats == '') return this.$toast.error('Seats is required')
+
+      const img = await this.$refs.vueFileAgent.upload(
+         `https://carrental-cloudbased-be.herokuapp.com/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+         {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
+      );
+
+      this.car.image = img[0].data
+
+      const res = await this.$store.dispatch('cars/saveCar', this.car)
+      if(res.status == 200){
+        this.$toast.success('Car saved successfully!');
+        this.$bvModal.hide('newCarModal')
+        this.fileRecordsForUpload = [];
+        this.fileRecords = [];
+        this.car = {
+          brand: '',
+          model: '',
+          description: '',
+          transmission_type: '',
+          year: '',
+          seats: '',
+          image: '',
+          rate: {
+            per_day: '',
+            with_driver: '',
+          }
+        },
+        this.getCars()
+      }
+    },
+    async updateCar(){
+      if(this.carupdate.car_brand_id == '') return this.$toast.error('Car Brand is required')
+      if(this.carupdate.model == '') return this.$toast.error('Car model is required')
+      if(this.carupdate.description == '') return this.$toast.error('Description is required')
+      if(this.carupdate.transmission_type_id == '') return this.$toast.error('Transmission Type is required')
+      if(this.carupdate.year == '') return this.$toast.error('Year is required')
+      if(this.carupdate.seats == '') return this.$toast.error('Seats is required')
+      if(this.carupdate.rate.per_day == '') return this.$toast.error('Rate per day is required')
+      if(this.carupdate.rate.with_driver == '') return this.$toast.error('Rate with driver is required')
+
+      let data = {
+        brand: this.carupdate.car_brand_id,
+        model: this.carupdate.model,
+        description: this.carupdate.description,
+        transmission_type: this.carupdate.transmission_type_id,
+        year: this.carupdate.year,
+        seats: this.carupdate.seats,
+        per_day: this.carupdate.rate.per_day,
+        with_driver: this.carupdate.rate.with_driver,
+        image: ''
+      }
+
+      if(this.fileRecordsForUpload.length > 0){
+        const img = await this.$refs.vueFileAgent.upload(
+           `https://carrental-cloudbased-be.herokuapp.com/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+           {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
+        );
+  
+        data.image = img[0].data
+      }
+
+      const res = await this.$store.dispatch('cars/updateCar', {id: this.id, data: data})
+      if(res.status == 200){
+        this.$toast.success('Car updated successfully!');
+        this.$bvModal.hide('updateCarModal')
+        this.fileRecordsForUpload = [];
+        this.fileRecords = [];
+        this.getCars()
+      }
+    },
+    async getCars(page = 1){
+      await this.$store.dispatch('cars/getCars', page)
+    },
+    async deleteCar(){
+      const res = await this.$store.dispatch('cars/deleteCar', this.id)
+      if(res.status == 200) {
+        this.$toast.success('Car deleted successfully!')
+        this.$bvModal.hide('deleteCarModal')
+      }
+    },
+    async searchCar(page = 1){
+      let data = {
+        search: this.searchcar
+      }
+
+      this.isSearching = true
+      await this.$store.dispatch('cars/searchCar', {data: data, page: page})
+      this.isSearching = false
+    },
+    async carSearch(){
+      if(this.searchcar == ""){
+        this.getCars()
+      }
+      else {
+        this.searchCar()
+      }
+    },
+
+    async saveBrand(){
+      if(this.carbrand.brand == '') return this.$toast.error('Car brand is required')
+      const res = await this.$store.dispatch('cars/saveCarBrand', this.carbrand);
+      if(res.status == 200){
+        this.$toast.success('Car brand saved successfully!');
+        this.carbrand.brand = ''
+        this.$bvModal.hide('newCarBrandModal')
+        this.getCarBrands();
+      }
+    },
+    async searchBrand(page = 1){
+      let data = {
+        search: this.searchbrand
+      }
+
+      this.isSearching = true
+      await this.$store.dispatch('cars/searchCarBrand', {data: data, page: page})
+      this.isSearching = false
+    },
+    async brandSearch(){
+      if(this.searchbrand == ""){
+        this.getCarBrands()
+      }
+      else {
+        this.searchBrand()
+      }
+    },
+    async getCarBrands(page = 1){
+      const res = await this.$store.dispatch('cars/getCarBrands', page)
+    },
+    async updateCarBrand(){
+      let data = {
+        brand: this.updatecarbrand.brand
+      }
+      const res = await this.$store.dispatch('cars/updateCarBrand', {id: this.id, data: data})
+      if(res.status == 200) {
+        this.$toast.success('Car Brand updated successfully!')
+        this.getCarBrands();
+        this.$bvModal.hide('updateCarBrandModal')
+      }
+    },
+    async deleteCarBrand(){
+      const res = await this.$store.dispatch('cars/deleteCarBrand', this.id)
+      if(res.status == 200) {
+        this.$toast.error('Car Brand deleted successfully!')
+        this.$bvModal.hide('deleteCarBrandModal')
+      }
+    },
+    showError(data){
+     for (const key of Object.keys(data)) {
+       this.$toast.error(data[key][0]); 
+     }
+   },
+  },
+  computed: {
+   ...mapState('cars', ['brands', 'allbrands', 'cars', 'transmission'])
+  },
+  watch: {
+   searchbrand(before, after){
+      this.brandSearch()
+   },
+   searchcar(before, after){
+      this.carSearch()
+   },
+  }
+}
+</script>

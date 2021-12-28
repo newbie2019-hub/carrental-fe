@@ -144,6 +144,8 @@ export default {
       commit('SET_ACC', res.data)
       return res;
     }).catch(error => {
+      commit('UNSET_USER')
+      window.location.reload() 
       return error.response;
     })
 
@@ -155,6 +157,7 @@ export default {
 
       return res;
     }).catch(error => {
+      commit('UNSET_USER')
       return error.response;
     })
 

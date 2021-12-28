@@ -8,6 +8,10 @@ html, body {
  font-family: 'Poppins', sans-serif !important;
 }
 
+.lh-0 {
+  line-height: .5rem !important;
+}
+
 .home {
  width: 100%;
  height: 100vh;
@@ -214,10 +218,47 @@ nav ul li a:hover{
  margin-top: 75px;
 }
 
+.btn-toggle {
+ display: none !important;
+}
+
+.bi-2x {
+ font-size: 1.35rem;
+}
+
+.closenav {
+ position: absolute;
+ top: 5%;
+ right: 10%;
+ font-weight: 600;
+ color: white;
+ cursor: pointer;
+ display: none;
+}
+
+.toggleNav {
+ width: 100% !important;
+ transition: all 250ms;
+ text-align: center;
+ z-index: 10;
+}
+
+.toggleNav a{
+ padding: 12px 30px !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
+.bg-transparent:hover {
+  background-color: #659adbc2 !important;
+}
+
 /**  SCROLL BAR */
 ::-webkit-scrollbar {
  width: 7px;
- height: 7px;
+ height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -234,3 +275,44 @@ nav ul li a:hover{
  background: #2b8ce6; 
 }
 
+@media only screen and (max-width: 892px) {
+ .sidenav {
+  width: 200px;
+ }
+ 
+ .navigation {
+  width: calc(100% - 200px);
+ }
+
+ .content-container {
+  margin-left: 205px;
+  margin-top: 75px;
+ }
+}
+
+@media only screen and (max-width: 624px) {
+ .btn-toggle {
+  display: block !important;
+ }
+
+ .closenav {
+   display: block !important;
+ }
+
+ .sidenav {
+  width: 0px;
+ }
+
+ .sidenav a {
+  padding: 0px;
+ }
+
+ .navigation {
+  width: 100%;
+ }
+
+ .content-container {
+  margin-left: 5px;
+  margin-top: 75px;
+ }
+}

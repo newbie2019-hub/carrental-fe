@@ -24,7 +24,7 @@ export default {
   },
   actions: {
     async returnedCar({commit}, data){
-      const res = await API.put(`/admin/rentals/${data.id}`, data).then(res => {
+      const res = await API.put(`/user/rentals/${data.id}`, data).then(res => {
         return res;
       }).catch(err => {
        return err.response;
@@ -33,7 +33,7 @@ export default {
       return res;
     },
     async getRentals({commit}, page){
-      const res = await API.get(`/admin/rentals?page=${page}`).then(res => {
+      const res = await API.get(`/user/car/rentals?page=${page}`).then(res => {
        commit('SET_RENTALS', res.data)
         return res;
       }).catch(err => {
@@ -43,7 +43,7 @@ export default {
       return res;
     },
     async getPayments({commit}){
-      const res = await API.get(`/admin/payments`).then(res => {
+      const res = await API.get(`/user/payments`).then(res => {
        commit('SET_PAYMENTS', res.data)
         return res;
       }).catch(err => {
@@ -52,18 +52,8 @@ export default {
 
       return res;
     },
-    async getSummary({commit}){
-      const res = await API.get(`/admin/summary`).then(res => {
-       commit('SET_SUMMARY', res.data)
-        return res;
-      }).catch(err => {
-       return err.response;
-      })
-
-      return res;
-    },
     async searchRental({commit}, {page, data}){
-      const res = await API.post(`/admin/search/rentals?page=${page}`, data).then(res => {
+      const res = await API.post(`/user/search/car/rentals?page=${page}`, data).then(res => {
        commit('SET_RENTALS', res.data)
         return res;
       }).catch(err => {

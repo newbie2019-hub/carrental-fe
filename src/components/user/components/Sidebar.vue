@@ -1,29 +1,27 @@
 <template>
   <div id="sidenav" class="sidenav">
    <p class="mt-5 mb-4 text-white text-center fw-bolder">MANAGEMENT</p>
-   <router-link to="/admin/dashboard"><i class="bi bi-bookmarks"></i> Dashboard</router-link>
-   <router-link to="/admin/clients"><i class="bi bi-people"></i> Clients</router-link>
-   <router-link to="/admin/branch"><i class="bi bi-diagram-2"></i>Branch</router-link>
-   <router-link to="/admin/cars"><i class="bi bi-plus-circle"></i>Cars</router-link>
-   <router-link to="/admin/rentals"><i class="bi bi-calendar-plus"></i> Rentals</router-link>
-   <router-link to="/admin/inquiries"><i class="bi bi-question-circle"></i> Queries</router-link>
+   <router-link to="/" class="bg-transparent"><i class="bi bi-geo-fill"></i> Home</router-link>
+   <router-link to="/user/rentals"><i class="bi bi-bookmarks"></i> Rentals</router-link>
+   <router-link to="/user/cars"><i class="bi bi-plus-circle"></i> Cars</router-link>
+   <router-link to="/user/rents"><i class="bi bi-cash-coin"></i> Car Rents</router-link>
    <a href="" v-on:click.prevent="setValues(); $bvModal.show('settingsModal')" ><i class="bi bi-tools"></i> Settings</a>
    <a href="" v-on:click.prevent="$bvModal.show('logoutModal')"><i class="bi bi-x-circle"></i> Log-out</a>
 
-   <b-modal id="logoutModal" centered title="Logout">
+  <b-modal id="logoutModal" centered title="Logout">
     <p class="my-4">Are you sure you want to log-out?</p>
     <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-      <b-button size="sm" variant="danger" v-on:click.prevent="logout">
+      <b-button variant="primary" @click="cancel()"> Cancel </b-button>
+      <b-button variant="danger" v-on:click.prevent="logout" :disabled="isLoading">
         Logout
       </b-button>
     </template>
    </b-modal>
 
-  <b-modal id="settingsModal" centered title="Account Settings">
+   <b-modal id="settingsModal" scrollable centered title="Account Settings">
    <div class="row pe-4 ps-4 pt-2 pb-2">
     <div class="col">
-       <label for="item">Profile Image</label>
+     <label for="item">Profile Image</label>
      <VueFileAgent
             ref="vueFileAgent"
             @select="filesSelected($event)"
@@ -49,6 +47,9 @@
 
      <label for="remarks">Last Name</label>
      <input v-model="data.last_name" id="remarks" type="text" class="form-control" placeholder="" aria-label="Last Name">
+     
+     <label for="remarks">Contact Number</label>
+     <input v-model="data.contact_number" id="remarks" type="text" class="form-control" placeholder="" aria-label="Last Name">
 
      <label for="gender">Select Gender</label>
      <select id="gender" v-model="data.gender" class="form-select">
@@ -103,11 +104,16 @@ export default {
       return moment(date).format('MMMM DD, YYYY');
     }
   },
-  mounted(){
+  async mounted(){
+    await this.checkAuthUser()
     this.setValues()
   },
+  computed: {
+    ...mapState("auth", ["user"])
+  },
   methods: {
-   ...mapActions('auth', ['logoutAdminUser']),
+   ...mapActions('auth', ['checkAuthUser']),
+   ...mapActions('auth', ['logoutAuthUser']),
    filesSelected: function(fileRecordsNewlySelected) {
      var validFileRecords = fileRecordsNewlySelected.filter(
        (fileRecord) => !fileRecord.error
@@ -135,7 +141,7 @@ export default {
      sideNav.classList.toggle('toggleNav')
    },
    async logout(){
-     const res = await this.logoutAdminUser()
+     const res = await this.logoutAuthUser()
      if(res.status == 200){
        this.$router.push('/')
      }
@@ -145,31 +151,35 @@ export default {
      this.data.first_name = this.user.info.first_name
      this.data.middle_name = this.user.info.middle_name
      this.data.last_name = this.user.info.last_name
+     this.data.contact_number = this.user.info.contact_number
      this.data.gender = this.user.info.gender
      this.data.email = this.user.email
    },
    async updateAccount(){
+     this.isLoading = true
+
      if(this.fileRecordsForUpload.length > 0){
        const img = await this.$refs.vueFileAgent.upload(
-           `http://127.0.0.1:8000/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+           `http://127.0.0.1:8000/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
            {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
        );
 
        this.data.img = img[0].data
      }
-     const res = await this.$store.dispatch('auth/updateAdminAccount', this.data)
+
+     const res = await this.$store.dispatch('auth/updateUserAccount', this.data)
+
      if(res.status == 200){
-       await this.$store.dispatch('auth/checkAdminUser')
+       await this.$store.dispatch('auth/checkAuthUser')
        this.$bvModal.hide('settingsModal')
        this.$toast.success('Account Info updated successfully!')
      }
+     this.isLoading = false
    }
   },
-  computed: {
-    ...mapState("auth", ["user"]),
-   getRoute: function(){
-      return this.$route.path
-    }
+  watch: {
+    
   }
+  
 }
 </script>

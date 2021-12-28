@@ -6,6 +6,7 @@
     <router-view name="adminDashboard"/>
     <router-view name="cars"/>
     <router-view name="clients"/>
+    <router-view name="branch"/>
     <router-view name="inquiries"/>
     <router-view name="adminRentals"/>
    </div>

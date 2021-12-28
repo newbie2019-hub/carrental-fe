@@ -2,7 +2,7 @@
   <div>
     <div class="hero ">
      <div class="d-flex justify-content-center align-items-center h-100">
-      <div class="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+      <div class="col-11 col-sm-8 col-md-5 col-lg-4 col-xl-4">
        <div class="card p-5">
          <h4 class="mb-3 mt-2">Login</h4>
          <p class="mb-4"><small>Welcome! Please fill in your email and password to sign-in.</small></p>
@@ -21,7 +21,7 @@
          </div>
          <div class="d-flex justify-content-center mt-4">
           <div class="col-12">
-           <button href="" v-on:click.prevent="login" class="btn rounded-pill btn-primary btn-100" :disabled="isLoading">Sign-in <i class="bi bi-arrow-right-circle"></i></button>
+           <button href="" v-on:click.prevent="login" class="btn btn-primary btn-100" :disabled="isLoading">Sign-in <i class="bi bi-arrow-right-circle"></i></button>
           </div>
          </div>
        </div>

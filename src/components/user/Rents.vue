@@ -10,7 +10,7 @@
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
-       <div class="col-6 col-sm-5 col-md-5 col-lg-4 col-xl-3">
+       <div class="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3">
          <div class="input-group mb-3">
            <input type="text" v-model="search" class="form-control" id="floatingSearch" placeholder="Search here">
            <button @click.prevent="" class="btn btn-primary"><i class="bi bi-search"></i></button>
@@ -41,6 +41,7 @@
           </tr>
         </thead>
         <tbody>
+          
           <tr v-for="(rent, i) in rentals.data" :key="i">
             <td>
               <b-badge class="rounded-pill text-center" :class="rent.rental_status == 'finished' ? 'bg-success' : 'bg-secondary'">
@@ -170,18 +171,19 @@ export default {
   },
   async mounted(){
     this.initialLoading = true
-    await this.$store.dispatch('auth/checkAdminUser')
-    await this.$store.dispatch('rental/getPayments')
-    await this.$store.dispatch('rental/getRentals', 1);
+    await this.$store.dispatch('auth/checkAuthUser')
+    await this.$store.dispatch('userrental/getPayments')
+    await this.$store.dispatch('userrental/getRentals', 1);
     this.initialLoading = false
   },
   methods: {
     async returnedCar(){
       this.isLoading = true
-      const {status, data} = await this.$store.dispatch('rental/returnedCar', this.data)
-      await this.$store.dispatch('rental/getRentals', 1);
-      this.$bvModal.hide('returnedCarModal')
+      const {status, data} = await this.$store.dispatch('userrental/returnedCar', this.data)
+      await this.$store.dispatch('userrental/getRentals', 1);
+
       this.isLoading = false
+      this.$bvModal.hide('returnedCarModal')
       if(status == 200) return this.$toast.success('Booking has been marked as done')
       if(status != 200) return this.$toast.success('Something went wrong')
     },
@@ -195,7 +197,7 @@ export default {
       }
     },
     async rentalSearch(){
-      if(this.searchcar == ""){
+      if(this.search == ""){
         this.getRentals()
       }
       else {
@@ -208,12 +210,12 @@ export default {
       }
 
       this.isSearching = true
-      await this.$store.dispatch('rental/searchRental', {data: data, page: page})
+      await this.$store.dispatch('userrental/searchRental', {data: data, page: page})
       this.isSearching = false
     },
 
     async getRentals(page = 1){
-      const res = await this.$store.dispatch('rental/getRentals', page)
+      await this.$store.dispatch('userrental/getRentals', page)
     },
     showError(data){
      for (const key of Object.keys(data)) {
@@ -230,14 +232,18 @@ export default {
     async updatePayment(){
       if(this.cash_received == '') return this.$toast.error('Received amount is empty')
       if(this.cash_received < this.data.total_payment) return this.$toast.error('Insufficient amount received')
+
       this.isLoading = true
+
       let data = {
         rental_id: this.data.id,
         total_payment: this.data.total_payment,
         cash_received: this.cash_received,
         change: (parseFloat(this.cash_received) - parseFloat(this.data.total_payment))
       }
+
       const res = await this.$store.dispatch('client/updatePayment', data)
+
       if(res.status == 200){
         this.$toast.success(res.data.msg)
         this.rentalSearch()
@@ -251,7 +257,7 @@ export default {
 
   },
   computed: {
-   ...mapState('rental', ['rentals', 'payments'])
+   ...mapState('userrental', ['rentals', 'payments'])
   },
   watch: {
    search(before, after){

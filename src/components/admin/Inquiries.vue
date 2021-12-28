@@ -17,7 +17,7 @@
          :table-props="{ bordered: false, striped: false }"
        ></b-skeleton-table>
       <table v-if="!initialLoading" class="table table-hover">
-        <caption>Total Queries: {{inquiry.total}}</caption>
+        <caption>Showing {{inquiry.from}} to {{inquiry.to}} out of {{inquiry.total}} inquiry</caption>
         <thead>
           <tr>
             <th scope="col" >Full Name</th>

@@ -1,13 +1,11 @@
 <template>
  <div>
   <div class="container">
-   <h5 class="text-primary pt-4">Client Management</h5>
-   <p class="text-muted">Here are the list of your clients</p>
    <div class="row g-0 mt-5">
-    <div class="card p-5 mb-4">
+    <div class="card p-5 mb-4 mt-5">
      <div class="d-flex align-items-center">
-       <div class="d-flex flex-column me-auto mt-2">
-         <h5 class="text-violet fw-bold">Records</h5>
+       <div class="d-flex flex-column me-auto mt-3">
+         <h5 class="text-violet fw-bold">Clients</h5>
          <p class="mb-4"><small>Manage your client records below</small></p>
        </div>
        <div class="d-flex flex-column mt-2">
@@ -30,7 +28,7 @@
          :table-props="{ bordered: false, striped: false }"
        ></b-skeleton-table>
       <table v-if="clients != 0 && !initialLoading" class="table table-hover">
-        <caption>Total Clients: {{clients.total}}</caption>
+        <caption>Showing {{clients.from}} to {{clients.to}} out of {{clients.total}} clients</caption>
         <thead>
           <tr>
             <th scope="col"></th>

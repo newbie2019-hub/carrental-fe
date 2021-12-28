@@ -64,7 +64,7 @@
         
          <div class="d-flex justify-content-center mt-4">
           <div class="col-12">
-           <button href="" v-on:click.prevent="createAccount" class="btn rounded-pill btn-primary btn-100" :disabled="isLoading">Sign-up <i class="bi bi-arrow-right-circle"></i></button>
+           <button href="" v-on:click.prevent="createAccount" class="btn btn-primary btn-100" :disabled="isLoading">Sign-up <i class="bi bi-arrow-right-circle"></i></button>
           </div>
          </div>
        </div>

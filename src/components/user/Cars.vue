@@ -2,7 +2,7 @@
  <div>
   <div class="container">
    <div class="row g-0 mt-4">
-    <div class="card p-5 mb-4 mt-4">
+    <div class="card p-5 mb-4 mt-5">
      <div class="d-flex align-items-center">
        <div class="d-flex flex-column me-auto mt-2">
          <h5 class="text-violet fw-bold">Cars</h5>
@@ -13,7 +13,7 @@
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
-       <div class="col-6 col-sm-5 col-md-5 col-lg-4 col-xl-3">
+       <div class="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3">
          <div class="input-group mb-3">
            <input type="text" v-model="searchcar" class="form-control" id="floatingSearch" placeholder="Search here">
            <button @click.prevent="" class="btn btn-primary"><i class="bi bi-search"></i></button>
@@ -27,12 +27,11 @@
          :columns="6"
          :table-props="{ bordered: false, striped: false }"
        ></b-skeleton-table>
-      <table v-if="!initialLoading" class="table table-hover">
+      <table v-if="!initialLoading" class="table table-hover table-striped">
         <caption>Showing {{cars.from}} to {{cars.to}} out of {{cars.total}} car records</caption>
         <thead>
           <tr >
             <th scope="col">Image</th>
-            <th scope="col" >Owner</th>
             <th scope="col" >Status</th>
             <th scope="col" >Brand</th>
             <th scope="col" >Model</th>
@@ -45,12 +44,14 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="cars.data.length == 0">
+            <td colspan="11" class="text-center">
+              No data found
+            </td>
+          </tr>
           <tr v-for="(car, i) in cars.data" :key="i">
             <td>
              <img :src="'http://127.0.0.1:8000/uploads/'+ car.image" class="w-75" alt="">
-            </td>
-            <td class="text-nowrap">
-              {{car.owner ? car.owner.info.first_name + ' ' + car.owner.info.last_name : 'Management'}}
             </td>
             <td>
               <b-badge class="rounded-pill" :class="car.status == 'available' ? 'bg-success' : 'bg-danger'">
@@ -81,60 +82,6 @@
      </div>
     </div>
    </div>
-
-   <div class="row g-0 mt-3">
-    <div class="card p-5 mb-4">
-     <div class="d-flex align-items-center">
-       <div class="d-flex flex-column me-auto mt-2">
-         <h5 class="text-violet fw-bold">Car Brands</h5>
-         <p class="mb-4"><small>Manage your car brand below</small></p>
-       </div>
-       <div class="d-flex flex-column mt-2">
-         <button v-on:click.prevent="$bvModal.show('newCarBrandModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Brand</button>
-       </div>
-     </div>
-     <div class="d-flex justify-content-end mt-2">
-       <div class="col-6 col-sm-5 col-md-5 col-lg-4 col-xl-3">
-         <div class="input-group mb-3">
-           <input type="text" v-model="searchbrand" class="form-control" id="floatingSearch" placeholder="Search here">
-           <button @click.prevent="searchBrand()" class="btn btn-primary"><i class="bi bi-search"></i></button>
-         </div>
-       </div>
-     </div>
-     <div class="table-responsive mt-4">
-      <b-skeleton-table
-         v-if="initialLoading"
-         :rows="4"
-         :columns="6"
-         :table-props="{ bordered: false, striped: false }"
-       ></b-skeleton-table>
-      <table v-if="!initialLoading" class="table table-hover">
-        <caption>Showing {{brands.from}} to {{brands.to}} out of {{brands.total}} car brands</caption>
-        <thead>
-          <tr>
-            <th scope="col" >Brand</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(brand, i) in brands.data" :key="i">
-            <td>{{brand.brand}}</td>
-            <td class="text-nowrap">
-             <a v-on:click.prevent="$bvModal.show('updateCarBrandModal'); id = brand.id; updatecarbrand = JSON.parse(JSON.stringify(brand));" class="btn btn-primary btn-sm me-2" href=""><i class="bi bi-pencil"></i> Update</a>
-             <a v-on:click.prevent="id = brand.id; $bvModal.show('deleteCarBrandModal')" class="btn btn-danger btn-sm" href=""><i class="bi bi-x"></i> Delete</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-     </div>
-     <div class="row mt-3" v-if="brands.data">
-       <pagination :showDisabled="true" :align="'right'" :data="brands" @pagination-change-page="brandSearch">
-         <span slot="prev-nav">&laquo;</span>
-         <span slot="next-nav">&raquo;</span>
-       </pagination>
-     </div>
-    </div>
-   </div>
   </div>
 
   <!-- CAR --->
@@ -153,7 +100,7 @@
             @delete="fileDeleted($event)"
             :errorText="{
               type: 'Invalid file type. Only image file is allowed',
-              size: 'Image should not exceed 5MB in size',
+              size: 'Image should not exceed 3MB in size',
             }"
             v-model="fileRecords"
           ></VueFileAgent>
@@ -308,43 +255,17 @@
     </template>
    </b-modal>
   
-  <!-- CAR BRAND --->
-  <b-modal id="newCarBrandModal"  scrollable centered title="Enter Car Brand">
-    <input v-model="carbrand.brand" id="carbrand" type="text" class="form-control" placeholder="" aria-label="Middle name">
-   <template #modal-footer = {cancel} >
-     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-     <b-button variant="success" size="sm" v-on:click.prevent="saveBrand" :disabled="isLoading">
-       Save Brand
-     </b-button>
-   </template>
-  </b-modal>
-
-  <!-- UPDATE CAR BRAND --->
-  <b-modal id="updateCarBrandModal"  scrollable centered title="Update Car Brand">
-    <input v-model="updatecarbrand.brand" id="carbrand" type="text" class="form-control" placeholder="" aria-label="Car Brand">
-   <template #modal-footer = {cancel} >
-     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-     <b-button variant="success" size="sm" v-on:click.prevent="updateCarBrand" :disabled="isLoading">
-       Update Brand
-     </b-button>
-   </template>
-  </b-modal>
-
-  <!-- DELETE MODAL - CARBRAND --->
-  <b-modal id="deleteCarBrandModal" centered title="Confirm Delete">
-    <p class="">Deleting a car brand will also delete its record. Are you sure you want to delete this?</p>
-    <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-      <b-button variant="danger" size="sm" v-on:click.prevent="deleteCarBrand">
-        Delete
-      </b-button>
-    </template>
-   </b-modal>
  </div>
 </template>
 <script>
 import {mapState} from 'vuex';
+import moment from 'moment'
 export default {
+  filters: {
+     moment: function (date) {
+      return moment(date).format('MMMM DD, YYYY');
+    }
+  },
   data(){
    return {
      carbrand: {
@@ -383,8 +304,7 @@ export default {
   },
   async mounted(){
     this.initialLoading = true
-    await this.$store.dispatch('auth/checkAdminUser')
-    this.getCarBrands()
+    await this.$store.dispatch('auth/checkAuthUser')
     this.getCars()
     await this.$store.dispatch('cars/getAllCarBrands');
     await this.$store.dispatch('branch/getBranch');
@@ -420,7 +340,7 @@ export default {
         var k = this.fileRecords.indexOf(fileRecord);
          if (k !== -1) this.fileRecords.splice(k, 1);
        }
-     },
+    },
     async saveCar(){
       if (this.fileRecordsForUpload.length == 0) return this.$toast.error("An Image is required");
       if(this.car.brand == '') return this.$toast.error('Car Brand is required')
@@ -433,7 +353,7 @@ export default {
       if(this.car.seats == '') return this.$toast.error('Seats is required')
 
       const img = await this.$refs.vueFileAgent.upload(
-         `http://127.0.0.1:8000/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+         `http://127.0.0.1:8000/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
          {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
       );
 
@@ -441,7 +361,7 @@ export default {
 
       this.isLoading = true
 
-      const res = await this.$store.dispatch('cars/saveCar', this.car)
+      const res = await this.$store.dispatch('usercars/saveCar', this.car)
       if(res.status == 200){
         this.$toast.success('Car saved successfully!');
         this.$bvModal.hide('newCarModal')
@@ -489,14 +409,14 @@ export default {
 
       if(this.fileRecordsForUpload.length > 0){
         const img = await this.$refs.vueFileAgent.upload(
-           `http://127.0.0.1:8000/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+           `http://127.0.0.1:8000/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
            {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
         );
   
         data.image = img[0].data
       }
 
-      const res = await this.$store.dispatch('cars/updateCar', {id: this.id, data: data})
+      const res = await this.$store.dispatch('usercars/updateCar', {id: this.id, data: data})
       if(res.status == 200){
         this.$toast.success('Car updated successfully!');
         this.$bvModal.hide('updateCarModal')
@@ -508,10 +428,10 @@ export default {
       this.isLoading = false
     },
     async getCars(page = 1){
-      await this.$store.dispatch('cars/getCars', page)
+      await this.$store.dispatch('usercars/getCars', page)
     },
     async deleteCar(){
-      const res = await this.$store.dispatch('cars/deleteCar', this.id)
+      const res = await this.$store.dispatch('usercars/deleteCar', this.id)
       if(res.status == 200) {
         this.$toast.success('Car deleted successfully!')
         this.$bvModal.hide('deleteCarModal')
@@ -523,7 +443,7 @@ export default {
       }
 
       this.isSearching = true
-      await this.$store.dispatch('cars/searchCar', {data: data, page: page})
+      await this.$store.dispatch('usercars/searchCar', {data: data, page: page})
       this.isSearching = false
     },
     async carSearch(){
@@ -534,57 +454,10 @@ export default {
         this.searchCar()
       }
     },
-
-    async saveBrand(){
-      if(this.carbrand.brand == '') return this.$toast.error('Car brand is required')
-      this.isLoading = true
-      const res = await this.$store.dispatch('cars/saveCarBrand', this.carbrand);
-      if(res.status == 200){
-        this.$toast.success('Car brand saved successfully!');
-        this.carbrand.brand = ''
-        this.$bvModal.hide('newCarBrandModal')
-        this.getCarBrands();
-      }
-      this.isLoading = false
-    },
-    async searchBrand(page = 1){
-      let data = {
-        search: this.searchbrand
-      }
-
-      this.isSearching = true
-      await this.$store.dispatch('cars/searchCarBrand', {data: data, page: page})
-      this.isSearching = false
-    },
-    async brandSearch(){
-      if(this.searchbrand == ""){
-        this.getCarBrands()
-      }
-      else {
-        this.searchBrand()
-      }
-    },
     async getCarBrands(page = 1){
-      const res = await this.$store.dispatch('cars/getCarBrands', page)
+      const res = await this.$store.dispatch('usercars/getCarBrands', page)
     },
-    async updateCarBrand(){
-      let data = {
-        brand: this.updatecarbrand.brand
-      }
-      const res = await this.$store.dispatch('cars/updateCarBrand', {id: this.id, data: data})
-      if(res.status == 200) {
-        this.$toast.success('Car Brand updated successfully!')
-        this.getCarBrands();
-        this.$bvModal.hide('updateCarBrandModal')
-      }
-    },
-    async deleteCarBrand(){
-      const res = await this.$store.dispatch('cars/deleteCarBrand', this.id)
-      if(res.status == 200) {
-        this.$toast.error('Car Brand deleted successfully!')
-        this.$bvModal.hide('deleteCarBrandModal')
-      }
-    },
+    
     showError(data){
      for (const key of Object.keys(data)) {
        this.$toast.error(data[key][0]); 
@@ -592,7 +465,8 @@ export default {
    },
   },
   computed: {
-   ...mapState('cars', ['brands', 'allbrands', 'cars', 'transmission']),
+   ...mapState('usercars', ['cars', ]),
+   ...mapState('cars', ['brands', 'allbrands', 'transmission']),
    ...mapState('branch', ['branch'])
   },
   watch: {

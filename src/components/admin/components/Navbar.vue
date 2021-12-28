@@ -1,10 +1,19 @@
 <template>
   <div>
    <div class="navigation" v-if="user.info">
-    <avatar v-if="user.info" class="ms-4" :username="user.info.first_name + ' ' + user.info.last_name" :rounded="true" :size="40" :color="'#fff'" :lighten="100"></avatar>
-    <div class="d-flex flex-column">
-      <p class="text-dark username lh-sm" v-if="user">Welcome, {{user.info.first_name}} {{user.info.last_name}}!</p>
-      <p class="text-muted username lh-sm" v-if="user"><small>{{user.email}}</small></p>
+    <div class="d-flex w-100 justify-content-between">
+      <div class="d-flex align-items-center">
+        <avatar v-if="user.info" class="ms-4" :username="user.info.first_name + ' ' + user.info.last_name" :rounded="true" :size="40" :color="'#fff'" :lighten="100"></avatar>
+        <div class="d-flex flex-column lh-0">
+          <p class="text-dark username" v-if="user">Welcome, {{user.info.first_name}} {{user.info.last_name}}!</p>
+          <p class="text-muted username mt-2" v-if="user"><small>{{user.email}}</small></p>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-toggle" id="btn-toggle" @click.prevent="toggleSideNav">
+          <i class="bi bi-list bi-2x"></i>
+        </button>
+      </div>
     </div>
    </div>
   </div>
@@ -23,7 +32,11 @@ export default {
     ...mapState("auth", ["user"])
   },
   methods: {
-   ...mapActions('auth', ['checkAdminUser'])
+   ...mapActions('auth', ['checkAdminUser']),
+   toggleSideNav(){
+     const sideNav = document.getElementById('sidenav')
+     sideNav.classList.toggle('toggleNav')
+   }
   }
 }
 </script>

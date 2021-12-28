@@ -2,7 +2,7 @@
  <div>
    <div class="container">
     <div class="row justify-content-center">
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4  mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4  mt-3">
         <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">
@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4 mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4 mt-3">
         <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">
@@ -28,7 +28,7 @@
           </div>
         </div>
       </div>
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4  mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4  mt-3">
         <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">
@@ -41,7 +41,7 @@
           </div>
         </div>
       </div>
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4 mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4 mt-3">
         <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">
@@ -54,7 +54,7 @@
           </div>
         </div>
       </div>
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4 mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4 mt-3">
         <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">
@@ -67,7 +67,7 @@
           </div>
         </div>
       </div>
-      <div class="col-11 col-sm-11 col-md-4 col-lg-4 col-xl-4 mt-3">
+      <div class="col-11 col-sm-6 col-md-4 col-lg-4 col-xl-4 mt-3">
        <div class="card p-3">
           <div class="row justify-content-center">
             <div class="col-6 d-flex align-items-center flex-column justify-content-center">

@@ -57,24 +57,27 @@
             <div class="card-body mt-3">
               <h5 class="card-title">{{selectedcar.brand.brand}} {{selectedcar.model}}</h5>
               <p class="mt-3">Transmission: {{selectedcar.transmission.type}}</p>
-              <p class="">Rate/Day: {{formatCurrency(selectedcar.rate.per_day)}}</p>
-              <p class="">With Driver: {{formatCurrency(selectedcar.rate.with_driver)}}</p>
               <p>Year Released: {{selectedcar.year}}</p>
               <p>Seating Capacity: {{selectedcar.seats}}</p>
               <p class="card-text mt-4">{{selectedcar.description}}</p>
-              <router-link to="/#cars" class="btn btn-primary rounded-pill mt-3">Change</router-link>
+              <p class="mt-3 mb-3 fw-bold">Rate</p>
+              <p class="">Rate per Day: {{formatCurrency(selectedcar.rate.per_day)}}</p>
+              <p class="">Rate per Week: {{formatCurrency(selectedcar.rate.per_week)}}</p>
+              <p class="">Rate per Month: {{formatCurrency(selectedcar.rate.per_month)}}</p>
+              <p class="mt-3">With Driver: {{formatCurrency(selectedcar.rate.with_driver)}}</p>
+              <router-link to="/#cars" class="btn btn-primary mt-3">Change</router-link>
            </div>
          </div>
        </div>
       </div>
       <div class="row justify-content-center mt-5">
-        <h3 class="text-center">Rental Form</h3>
-        <p class="text-center">All fields are required</p>
         <div class="col-11 col-sm-11 col-md-8 col-lg-7 col-xl-5 mt-5">
          <div class="card p-5">
+          <h3 class="text-center">Rental Form</h3>
+          <p class="text-center mb-4">All fields are required</p>
           <p>Pick-Up Date</p>
           <date-picker @change="dateDifference" :confirm="true" v-model="date.pickup" class="w-100" :disabled-date="disabledBeforeToday" value-type="format" :format="'YYYY-MM-DD'" type="date"></date-picker>
-          <p class="mt-2">Drop-off Date</p>
+          <p class="mt-2">Return Date</p>
           <date-picker @change="dateDifference" :confirm="true" v-model="date.dropoff" class="w-100"  :disabled-date="disabledBeforeToday" value-type="format" :format="'YYYY-MM-DD'" type="date"></date-picker>
           <p class="mt-2">Payment Type</p>
           <select class="form-select" v-model="card.payment_type">
@@ -109,10 +112,9 @@
             </div>
            </div>
           </div>
-          <p>Total Payment: {{total}}</p>
-          <div class="d-flex">
-           <button class="btn btn-primary rounded-pill mt-3" v-on:click.prevent="reserve" :disabled="isLoading">Proceed</button>
-          </div>
+          <p class="mt-3">Total Payment: {{formatCurrency(total)}}</p>
+           <a type="button" href="" class="text-decoration-none" @click.prevent="$bvModal.show('viewReservationModal')">View Rental Info</a>
+           <button class="btn btn-primary mt-3" v-on:click.prevent="reserve" :disabled="isLoading">Proceed</button>
          </div>
         </div>
       </div>
@@ -124,21 +126,21 @@
         <p>Send us a message and we'll reply to it immediately</p>
       </div>
       <div class="row justify-content-center ">
-        <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-6 mt-2 p-4">
+        <div class="col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6 mt-2 p-4">
           <h4>Contact Us</h4>
           <p class="mt-3">If you got any questions, please do not hesitate to send us a message. We reply within 24 hours!</p>
           <h4 class="mt-5">Email</h4>
           <p class="mt-2">emailaddress@gmail.com</p>
         </div>
-        <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-6 mt-2 p-4">
-          <div class="pe-5 ps-5">
+        <div class="col-11 col-sm-11 col-md-6 col-lg-6 col-xl-6 mt-2 p-4">
+          <div class="pe-3 ps-3">
             <h6>Full Name</h6>
             <input v-model="data.name" class="form-control mt-2">
             <h6 class="mt-2">Contact/Email</h6>
             <input v-model="data.email" class="form-control mt-2">
             <h6 class="mt-2">Message</h6>
             <textarea v-model="data.message" class="form-control mt-2" row="4"></textarea>
-            <button class="btn btn-primary rounded-pill mt-4" v-on:click.prevent="sendMessage" :disabled="isLoading">Submit</button>
+            <button class="btn btn-primary mt-4" v-on:click.prevent="sendMessage" :disabled="isLoading">Submit</button>
           </div>
         </div>
       </div>
@@ -147,6 +149,24 @@
     <div class="footer">
       <p>© 2021 Car Rental</p>
     </div>
+
+    <!-- VIEW RESERVATION INFO -->
+    <b-modal id="viewReservationModal" centered title="Reservation Info">
+      <h6 class="fw-bold mb-2">Car Info</h6>
+      <p>Car Model: {{selectedcar.model}}</p>
+      <p>Description: {{selectedcar.description}}</p>
+      <p>Branch: {{selectedcar.branch.name}}</p>
+      <h6 class="fw-bold mb-2 mt-2">Car Rate</h6>
+      <p>Per day: {{formatCurrency(selectedcar.rate.per_day)}}</p>
+      <p>Per week: {{formatCurrency(selectedcar.rate.per_week)}}</p>
+      <p>Per month: {{formatCurrency(selectedcar.rate.per_month)}}</p>
+      <h6 class="fw-bold mb-2 mt-2">Rental Info</h6>
+      <p>Total Days: {{totalDays}}</p>
+      <p>Total Payment: {{formatCurrency(total)}}</p>
+      <template #modal-footer = {cancel} >
+        <b-button variant="primary" size="sm" @click="cancel()" :disabled="isLoading"> Close </b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -182,6 +202,7 @@ export default {
       },
       withdriver: false,
       total: 0,
+      totalDays: 0,
     }
   },
   components: {
@@ -249,15 +270,39 @@ export default {
     },
     disabledBeforeToday(date){
       let d = new Date()
-      d.setDate(d.getDate())
+      d.setDate(d.getDate() + 1)
       return date < new Date(d.setHours(0, 0, 0, 0));
     },
     dateDifference(){
       var start = moment(this.date.pickup, "YYYY-MM-DD");
       var end = moment(this.date.dropoff, "YYYY-MM-DD");
 
+      //GET DAYS 
+      const days = moment.duration(end.diff(start)).asDays()
+      this.totalDays = days
+
       if(this.date.pickup != '' && this.date.dropoff != ''){
-       this.total = (this.selectedcar.rate.per_day * moment.duration(end.diff(start)).asDays())
+       if(days >= 30){
+         this.total = parseFloat(this.total) + parseFloat(this.selectedcar.rate.per_month * (days / 30).toFixed(0))
+         console.log(`Initial total for a month: ${this.total}\nDays remaining: ${days % 30}`)
+         if((days % 30) >= 7){
+          this.total = parseFloat(this.total) + parseFloat(this.selectedcar.rate.per_week * ((days % 30) / 7).toFixed(0))
+          console.log(`Initial total for a week: ${this.total}`)
+          this.total = parseFloat(this.total) + parseFloat(((days % 30) % 7) * this.selectedcar.rate.per_day)
+          console.log(`Total for the remaining days: ${this.total}`)
+         }
+         else {
+           console.log('Hi')
+          this.total = parseFloat(this.total) + ((days % 30) * this.selectedcar.rate.per_day)
+         }
+       }
+       else if(days >= 7 && days <= 30){
+         this.total = (this.selectedcar.rate.per_week * (days / 7).toFixed(0))
+         this.total = parseFloat(this.total) + ((days % 7) * this.selectedcar.rate.per_day)
+       }
+       else {
+         this.total = parseFloat(this.selectedcar.rate.per_day * days)
+       }
       }
     },
     async sendMessage() {

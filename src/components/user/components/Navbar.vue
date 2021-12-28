@@ -1,72 +1,24 @@
 <template>
  <div>
-  <div class="user-navbar">
-   <div class="d-flex align-items-center">
-    <avatar v-if="user.info" class="ms-4" :username="user.info.first_name + ' ' + user.info.last_name" :rounded="true" :size="40" :color="'#fff'" :lighten="100"></avatar>
-    <div class="d-flex flex-column ms-2 lh-sm text-white">
-     <h6>{{user.info.first_name}} {{user.info.last_name}}</h6>
-     <p><small>{{user.email}}</small></p>
+  <div class="navigation">
+   <div class="d-flex w-100 justify-content-between">
+    <div class="d-flex align-items-center">
+      <b-avatar variant="info" :src="`http://127.0.0.1:8000/uploads/${user.info.image}`"></b-avatar>
+      <div class="d-flex flex-column ms-2 lh-0">
+      <h6>{{user.info.first_name}} {{user.info.last_name}}</h6>
+      <p><small>{{user.email}}</small></p>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-toggle" id="btn-toggle" @click.prevent="toggleSideNav">
+        <i class="bi bi-list bi-2x"></i>
+      </button>
     </div>
    </div>
-   <ul>
-    <li><a href="/">Home</a></li>
-     <li><a href="/user/rentals">Rentals</a></li>
-     <li><a href="" v-on:click.prevent="$bvModal.show('settingsModal')">Settings</a></li>
-     <li><a href="" v-on:click.prevent="$bvModal.show('logoutModal')">Log-out</a></li>
-   </ul>
   </div>
-
-  <b-modal id="logoutModal" centered title="Logout">
-    <p class="my-4">Are you sure you want to log-out?</p>
-    <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-      <b-button size="sm" variant="danger" v-on:click.prevent="logout" :disabled="isLoading">
-        Logout
-      </b-button>
-    </template>
-   </b-modal>
-
-   <b-modal id="settingsModal" centered title="Account Settings">
-   <div class="row pe-4 ps-4 pt-2 pb-2">
-    <div class="col">
-     <label for="item">First Name</label>
-     <input v-model="data.first_name" id="item" type="text" class="form-control" placeholder="" aria-label="First Name">
-     
-     <label for="remarks">Middle Name</label>
-     <input v-model="data.middle_name" id="remarks" type="text" class="form-control" placeholder="" aria-label="Middle Name">
-
-     <label for="remarks">Last Name</label>
-     <input v-model="data.last_name" id="remarks" type="text" class="form-control" placeholder="" aria-label="Last Name">
-     
-     <label for="remarks">Contact Number</label>
-     <input v-model="data.contact_number" id="remarks" type="text" class="form-control" placeholder="" aria-label="Last Name">
-
-     <label for="gender">Select Gender</label>
-     <select id="gender" v-model="data.gender" class="form-select">
-      <option value="" disabled selected>Select Gender</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-     </select>
-     
-     <label for="email">Email</label>
-     <input v-model="data.email" id="email" type="text" class="form-control" placeholder="" aria-label="Email">
-
-     <label for="password">Password </label>
-     <input v-model="data.password" id="password" type="password" class="form-control" placeholder="" aria-label="Password">
-     <label class="text-muted"><small>Leave empty if you dont want to make changes</small></label>
-    </div>
-   </div>
-    <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()" :disabled="isLoading"> Cancel </b-button>
-      <b-button variant="success" size="sm" v-on:click.prevent="updateAccount" :disabled="isLoading">
-        Update
-      </b-button>
-    </template>
-   </b-modal>
  </div>
 </template>
 <script>
-import Avatar from 'vue-avatar'
 import {mapState,mapActions} from 'vuex'
 export default {
   data(){
@@ -93,6 +45,10 @@ export default {
   methods: {
    ...mapActions('auth', ['checkAuthUser']),
    ...mapActions('auth', ['logoutAuthUser']),
+   toggleSideNav(){
+     const sideNav = document.getElementById('sidenav')
+     sideNav.classList.toggle('toggleNav')
+   },
    async logout(){
     this.isLoading = true
     const res = await this.logoutAuthUser()
@@ -122,7 +78,6 @@ export default {
      this.isLoading = false
    }
   },
-  components:{ Avatar }
 }
 </script>
 <style>

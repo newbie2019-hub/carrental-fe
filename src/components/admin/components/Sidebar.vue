@@ -151,7 +151,7 @@ export default {
    async updateAccount(){
      if(this.fileRecordsForUpload.length > 0){
        const img = await this.$refs.vueFileAgent.upload(
-           `http://127.0.0.1:8000/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+           `https://be-aclc-carrental.herokuapp.com/api/admin/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
            {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
        );
 

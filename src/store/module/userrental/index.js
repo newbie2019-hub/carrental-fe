@@ -6,11 +6,15 @@ export default {
     rentals: {},
     payments: {},
     summary: '',
+    rentalssummary: [],
   },
   getters: {
    
   },
   mutations: {
+   SET_RENTALS_SUMMARY(state, data) {
+    state.rentalssummary = data
+   },
    SET_RENTALS(state, data) {
     state.rentals = data
    },
@@ -25,6 +29,16 @@ export default {
   actions: {
     async returnedCar({commit}, data){
       const res = await API.put(`/user/rentals/${data.id}`, data).then(res => {
+        return res;
+      }).catch(err => {
+       return err.response;
+      })
+
+      return res;
+    },
+    async getRentalsSummary({commit}, page){
+      const res = await API.get(`/user/rentalSummary?token=${localStorage.getItem('auth')}`).then(res => {
+       commit('SET_RENTALS_SUMMARY', res.data)
         return res;
       }).catch(err => {
        return err.response;

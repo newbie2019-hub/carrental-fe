@@ -51,7 +51,7 @@
           </tr>
           <tr v-for="(car, i) in cars.data" :key="i">
             <td>
-             <img :src="'http://127.0.0.1:8000/uploads/'+ car.image" class="w-75" alt="">
+             <img :src="'https://be-aclc-carrental.herokuapp.com/uploads/'+ car.image" class="w-75" alt="">
             </td>
             <td>
               <b-badge class="rounded-pill" :class="car.status == 'available' ? 'bg-success' : 'bg-danger'">
@@ -353,7 +353,7 @@ export default {
       if(this.car.seats == '') return this.$toast.error('Seats is required')
 
       const img = await this.$refs.vueFileAgent.upload(
-         `http://127.0.0.1:8000/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+         `https://be-aclc-carrental.herokuapp.com/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
          {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
       );
 
@@ -409,7 +409,7 @@ export default {
 
       if(this.fileRecordsForUpload.length > 0){
         const img = await this.$refs.vueFileAgent.upload(
-           `http://127.0.0.1:8000/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
+           `https://be-aclc-carrental.herokuapp.com/api/user/uploadFeaturedImage?token=` + localStorage.getItem("auth"), 
            {'X-Requested-With' : 'XMLHttpRequest'}, this.fileRecordsForUpload
         );
   

@@ -53,7 +53,7 @@
        </div>
        <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-4 mt-2 ">
          <div class="card  p-3">
-            <img :src="'http://127.0.0.1:8000/uploads/' + selectedcar.image" class="card-img-top" alt="...">
+            <img :src="'https://be-aclc-carrental.herokuapp.com/uploads/' + selectedcar.image" class="card-img-top" alt="...">
             <div class="card-body mt-3">
               <h5 class="card-title">{{selectedcar.brand.brand}} {{selectedcar.model}}</h5>
               <p class="mt-3">Transmission: {{selectedcar.transmission.type}}</p>

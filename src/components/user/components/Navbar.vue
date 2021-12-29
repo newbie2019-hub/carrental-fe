@@ -3,7 +3,7 @@
   <div class="navigation">
    <div class="d-flex w-100 justify-content-between">
     <div class="d-flex align-items-center">
-      <b-avatar variant="info" :src="`http://127.0.0.1:8000/uploads/${user.info.image}`"></b-avatar>
+      <b-avatar variant="info" :src="`https://be-aclc-carrental.herokuapp.com/uploads/${user.info.image}`"></b-avatar>
       <div class="d-flex flex-column ms-2 lh-0">
       <h6>{{user.info.first_name}} {{user.info.last_name}}</h6>
       <p><small>{{user.email}}</small></p>

@@ -170,7 +170,7 @@ nav ul li a:hover{
 .sidenav a{
  display: flex;
  padding: 15px 40px;
- color: white;
+ color: rgb(245, 245, 245);
  text-decoration: none;
 }
 

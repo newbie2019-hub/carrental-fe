@@ -1,8 +1,20 @@
 <template>
  <div>
   <div class="container">
-   <div class="row g-0 mt-3">
-    <div class="card p-5 mb-4 mt-5">
+   <div class="row g-0">
+     <div class="card p-5 mb-4  mt-5">
+        <div class="d-flex flex-column me-auto mt-2">
+         <h5 class="text-violet fw-bold">Rental Summary</h5>
+         <p class="mb-4"><small>Displayed below is the summary for the rentals of your car</small></p>
+       </div>
+       <div class="row">
+        <LineChart :chartdata="chartdata" :options="options" :style="chartStyle"/>
+       </div>
+     </div>
+   </div>
+
+   <div class="row g-0">
+    <div class="card p-5 mb-4 mt-3">
      <div class="d-flex align-items-center">
        <div class="d-flex flex-column me-auto mt-2">
          <h5 class="text-violet fw-bold">Car Rentals</h5>
@@ -81,6 +93,7 @@
     </div>
    </div>
 
+<!-- 
    <div class="row g-0 mt-3">
     <div class="card p-5 mb-4">
      <div class="d-flex align-items-center">
@@ -118,7 +131,7 @@
       </table>
       </div>
     </div>
-   </div>
+   </div> -->
   </div>
 
   <b-modal id="returnedCarModal" scrollable centered title="Booking Finished">
@@ -152,11 +165,13 @@
 <script>
 import {mapState} from 'vuex';
 import moment from 'moment'
+import LineChart from './components/LineChart.vue'
 export default {
   filters: {
-     moment: function (date) {
+    moment: function (date) {
       return moment(date).format('MMMM DD, YYYY');
-    }
+    },
+    
   },
   data(){
    return {
@@ -166,8 +181,30 @@ export default {
      data: {
       
      },
-     cash_received: ''
+     cash_received: '',
+     chartdata: {
+       labels: [],
+       datasets: [],
+     },
+     colors: [
+       'rgb(75, 192, 192)', 
+       'rgb(216, 76, 76)', 
+     ],
+     options: {
+      type: Object,
+      responsive: true,
+      maintainAspectRatio: false,
+     },
+     chartStyle: {
+       height: 300,
+       width: 100,
+     }
    }
+  },
+  components: {LineChart},
+  async created(){
+    await this.$store.dispatch('userrental/getRentalsSummary');
+    this.setSummary()
   },
   async mounted(){
     this.initialLoading = true
@@ -177,6 +214,81 @@ export default {
     this.initialLoading = false
   },
   methods: {
+    setSummary(){
+      // console.log(this.rentalssummary)
+      // this.rentalssummary.forEach((data, i) => {
+      //   this.chartdata.labels.push(data.total_payment)
+      //   if(this.chartdata.datasets.length > 0){
+      //     this.chartdata.datasets.forEach((chartdata, i)=> {
+      //       console.log(`Chart ID: ${chartdata.id}\nCar ID: ${data.car_id} is ${chartdata.id == data.car_id}`)
+      //       if(chartdata.id == data.car.id) {
+      //         this.chartdata.datasets[i].data.push(data.total_payment)
+      //       }
+      //       else {
+      //         console.count('Data Push')
+      //         this.chartdata.datasets.push({
+      //             id: data.car.id,
+      //             label: data.car.model, 
+      //             data:[data.total_payment],
+      //             borderColor: 'rgb(75, 192, 192)', 
+      //             tension: 0.2
+      //         })
+      //       }
+      //     })
+      //   }
+      //   else {
+      //     console.log('Print this once')
+      //      this.chartdata.datasets.push({
+      //           id: data.car.id,
+      //           label: data.car.model, 
+      //           data:[data.total_payment],
+      //           borderColor: 'rgb(75, 192, 192)', 
+      //           tension: 0.2
+      //       })
+      //   }
+      // })
+      let flag = {match: false, index: 0}
+      this.rentalssummary.forEach((data, i) => {
+        this.chartdata.labels.push(data.pickup_date + ' to ' + data.dropoff_date)
+        if(this.chartdata.datasets.length > 0){
+          this.chartdata.datasets.forEach((chartdata, i)=> {
+            flag.match = false
+            if(chartdata.id == data.car.id) {
+              flag.match = true
+              flag.index = i
+            }
+          })
+          if(flag.match){
+            this.chartdata.datasets[flag.index].data.push(data.total_payment)
+            flag.match = false
+          }
+          else {
+              console.count('Data Push')
+              this.chartdata.datasets.push({
+                  id: data.car.id,
+                  label: data.car.model, 
+                  data:[data.total_payment],
+                  borderColor: this.colors[Math.floor(Math.random() * 2)], 
+                  tension: 0.2
+              })
+            }
+        }
+        else {
+          console.log('Print this once')
+           this.chartdata.datasets.push({
+                id: data.car.id,
+                label: data.car.model, 
+                data:[data.total_payment],
+                borderColor: 'rgb(75, 192, 192)', 
+                tension: 0.2
+            })
+        }
+      })
+
+      if(this.chartdata.labels.length > 0){
+        this.chartdata.labels.reverse()
+      }
+    },
     async returnedCar(){
       this.isLoading = true
       const {status, data} = await this.$store.dispatch('userrental/returnedCar', this.data)
@@ -257,7 +369,7 @@ export default {
 
   },
   computed: {
-   ...mapState('userrental', ['rentals', 'payments'])
+   ...mapState('userrental', ['rentals', 'payments', 'rentalssummary'])
   },
   watch: {
    search(before, after){

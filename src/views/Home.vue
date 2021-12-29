@@ -99,7 +99,7 @@
         </div>
         <div class="col-10 col-sm-10 col-md-6 col-lg-5 col-xl-4 mt-2 " v-for="(car, i) in filteredBranch" :key="i">
           <div class="card h-100 p-3">
-             <img :src="'http://127.0.0.1:8000/uploads/' + car.image" class="card-img-top" alt="Car Image">
+             <img :src="'https://be-aclc-carrental.herokuapp.com/uploads/' + car.image" class="card-img-top" alt="Car Image">
              <div class="card-body mt-3">
                <h5 class="card-title">{{car.brand.brand}} {{car.model}}</h5>
                <p class="text-muted">{{car.branch.name}}</p>

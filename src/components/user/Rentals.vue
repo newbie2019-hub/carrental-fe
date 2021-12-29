@@ -2,7 +2,7 @@
  <div>
    <div class="container mt-5">
      <div class="row g-0 justify-content-center">
-       <div class="card mt-5 p-5">
+       <div class="card mt-5 p-5 mb-5">
        <h5>Rentals</h5>
        <p>Here are your rental records</p>
          <div class="d-flex justify-content-end mb-4">

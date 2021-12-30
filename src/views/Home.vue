@@ -212,7 +212,7 @@ export default {
   },
   async mounted() {
     this.initialLoading = true
-    document.title = "ACLC Car Rental"
+    document.title = "Car Rental"
     await this.$store.dispatch('branch/getBranch')
     await this.$store.dispatch('auth/checkAuthUser')
     await this.$store.dispatch('cars/getHomeCars')

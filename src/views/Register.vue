@@ -104,7 +104,7 @@ export default {
        if(this.data.email == '') return this.$toast.error('Email is required')
        if(this.data.password == '') return this.$toast.error('Password is required')
        this.isLoading = true
-
+        //Vuex - Statemanagement
        const res = await this.$store.dispatch('auth/createAccount', this.data)
        if(res.status == 200){
         this.$toast.success('Account created successfully!')

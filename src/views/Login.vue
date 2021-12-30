@@ -48,6 +48,7 @@ export default {
    document.title ="Car Rental - Please Login"
   },
   methods: {
+    //From Vuex - Vuex is a statemanagement for VueJS
     ...mapActions('auth', ['loginAdminAccount', 'loginUserAccount']),
     async login(){
       if(this.adminlogin){

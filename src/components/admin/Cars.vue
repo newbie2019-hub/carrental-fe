@@ -28,7 +28,7 @@
          :table-props="{ bordered: false, striped: false }"
        ></b-skeleton-table>
       <table v-if="!initialLoading" class="table table-hover">
-        <caption>Showing {{cars.from}} to {{cars.to}} out of {{cars.total}} car records</caption>
+        <caption>Showing {{cars.from ? cars.from : '0'}} to {{cars.to ? cars.to : '0'}} out of {{cars.total}} car records</caption>
         <thead>
           <tr >
             <th scope="col">Image</th>
@@ -36,11 +36,12 @@
             <th scope="col" >Status</th>
             <th scope="col" >Brand</th>
             <th scope="col" >Model</th>
-            <th scope="col" class="text-nowrap">Description</th>
+            <th scope="col" class="text-nowrap" style="min-width: 200px">Description</th>
             <th scope="col" class="text-nowrap">Transmission</th>
             <th scope="col">Year</th>
             <th scope="col">Seats</th>
-            <th scope="col" >Branch</th>
+            <th scope="col">Branch</th>
+            <th scope="col" class="text-nowrap">Is Approved</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -65,7 +66,13 @@
             <td>{{car.seats}}</td>
             <td>{{car.branch.name}}</td>
             <td class="text-nowrap">
-             <a v-on:click.prevent="$bvModal.show('updateCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Update</a>
+               <b-badge class="rounded-pill" :class="car.approval_status == 'Approved' ? 'bg-success' : 'bg-danger'">
+                {{car.approval_status}}
+              </b-badge>
+            </td>
+            <td class="text-nowrap">
+             <a v-if="car.approval_status != 'Pending'" v-on:click.prevent="$bvModal.show('approveCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Update</a>
+             <a v-else v-on:click.prevent="$bvModal.show('approveCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-success btn-sm me-2" href="">Approve</a>
              <a v-on:click.prevent="$bvModal.show('carRateModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Rates</a>
              <a v-on:click.prevent="id = car.id; $bvModal.show('deleteCarModal')" class="btn btn-danger btn-sm" href="">Delete</a>
             </td>
@@ -293,7 +300,16 @@
     <p class="">Per Month: {{formatCurrency(carupdate.rate.per_month)}}</p>
     <p class="">With Driver: +{{formatCurrency(carupdate.rate.with_driver)}}</p>
     <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()"> Close </b-button>
+      <b-button variant="primary" @click="cancel()"> Close </b-button>
+    </template>
+   </b-modal>
+
+  <!-- CAR APPROVAL MODAL --->
+  <b-modal id="approveCarModal" centered title="Car Rate">
+    <p>Are you sure you want to approve this car to be available for rental?</p>
+    <template #modal-footer = {cancel} >
+      <b-button variant="primary" @click="cancel()"> Close </b-button>
+      <b-button variant="success" @click="approveCar"> Approve </b-button>
     </template>
    </b-modal>
 
@@ -301,8 +317,8 @@
   <b-modal id="deleteCarModal" centered title="Confirm Delete">
     <p class="">Deleting a car will also delete its record. Are you sure you want to delete this?</p>
     <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-      <b-button variant="danger" size="sm" v-on:click.prevent="deleteCar">
+      <b-button variant="secondary" @click="cancel()"> Cancel </b-button>
+      <b-button variant="danger" v-on:click.prevent="deleteCar">
         Delete
       </b-button>
     </template>
@@ -392,6 +408,14 @@ export default {
     this.initialLoading = false
   },
   methods: {
+    async approveCar(){
+      const res = await this.$store.dispatch('cars/approveCar', this.id)
+      if(res.status == 200) {
+        this.getCars()
+        this.$toast.success('Car approved successfully!')
+        this.$bvModal.hide('approveCarModal')
+      }
+    },
     formatCurrency(data){
       var formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',

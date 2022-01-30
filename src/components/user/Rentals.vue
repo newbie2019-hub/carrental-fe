@@ -8,13 +8,46 @@
          <div class="d-flex justify-content-end mb-4">
            <router-link to="/" class="btn btn-primary">New Rental</router-link>
          </div>
+         <div class="d-flex justify-content-end mt-2">
+          <div class="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+            <div class="input-group mb-3">
+              <input  type="search" v-model="search" class="form-control" id="floatingSearch" placeholder="Search here">
+              <button @click.prevent="" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            </div>
+          </div>
+         </div>
          <div class="table-responsive">
-          <b-skeleton-table v-if="initialLoading"
-            :rows="4"
-            :columns="8"
-            :table-props="{ bordered: true, striped: true }"
-          ></b-skeleton-table> 
-          <table class="table table-hover" v-if="!initialLoading">
+          <b-table :busy="initialLoading" striped hover :items="rentals" :fields="fields" :filter="search" :current-page="currentPage" :per-page="perPage" :filter-included-fields="[]" show-empty>
+            <template #cell(rental_status)="data">
+              <b-badge class="rounded-pill" :class="data.item.rental_status == 'on-going' ? 'bg-primary' : 'bg-success'">
+                {{data.item.rental_status}}
+              </b-badge>
+            </template>
+            <template #table-busy>
+              <div class="text-center text-danger my-2">
+                <b-spinner class="align-middle"></b-spinner>
+                <strong>Loading...</strong>
+              </div>
+            </template>
+            <template #cell(pickup_date)="data">
+              {{data.item.pickup_date | moment}}
+            </template>
+            <template #cell(dropoff_date)="data">
+              {{data.item.dropoff_date | moment}}
+            </template>
+            <template #cell(with_driver)="data">
+              {{data.item.with_driver ? 'Yes' : 'No'}}
+            </template>
+            <template #cell(total_payment)="data">
+              {{formatCurrency(data.item.total_payment)}}
+            </template>
+            <template #cell(rent_status)="data">
+              <b-badge class="rounded-pill" :class="data.item.status == 'Paid' ? 'bg-success' : 'bg-secondary'">
+                    <i class="bi bi-check2"></i> {{data.item.status}} 
+                  </b-badge>
+            </template>
+          </b-table>
+          <!-- <table class="table table-hover" v-if="!initialLoading">
             <caption>Shown on the table are your rentals record</caption>
             <thead>
               <tr>
@@ -55,7 +88,16 @@
                 </td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
+         </div>
+         <div class="row">
+           <b-pagination
+              v-model="currentPage"
+              :total-rows="rentals.length"
+              :per-page="perPage"
+              align="end"
+              class="my-0"
+            ></b-pagination>
          </div>
        </div>
      </div>
@@ -73,8 +115,57 @@ export default {
   },
   data(){
    return {
+     search: null,
      isLoading: false,
+     currentPage: 1,
+     perPage: 10,
      initialLoading: false,
+     fields: [
+       {
+         key: 'rental_status',
+         label: 'Rental Status',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'car.brand.brand',
+         label: 'Car Type',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'pickup_date',
+         class: 'text-nowrap',
+         label: 'Pick Up Date'
+       },
+       {
+         key: 'dropoff_date',
+         label: 'Return Date',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'with_driver',
+         label: 'With Driver',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'payment.type',
+         label: 'Payment Type',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'total_payment',
+         label: 'Total Payment',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'additional_instructions',
+         label: 'Additional Instruction',
+         class: 'text-nowrap'
+       },
+       {
+         key: 'rent_status',
+         label: 'Status'
+       }
+     ]
    }
   },
   async mounted() {

@@ -26,7 +26,7 @@
       <div class="d-flex flex-column h-100 align-items-center justify-content-center">
         <h1 class="w-75 heading text-white text-center">Roads were made for journeys, not destinations</h1>
         <p class="text-white mt-3 mb-3">your Budget-Friendly Car Rental</p>
-        <button class="btn btn-primary rounded-pill mt-5">Learn More</button>
+        <button class="btn btn-outline-light rounded-pill mt-5 p-3 d-flex align-items-center justify-content-center">LEARN MORE</button>
       </div>
       <div class="credit">
         <img src="@/assets/images/credit_card.png" alt="">
@@ -95,7 +95,10 @@
       </div>
       <div class="row justify-content-center align-items-stretch mt-5">
         <div v-if="homecars.length == 0">
-          <h6 class="text-center mt-5 mb-5">It appears that there are no available cars for rental. <br/>Sorry for the inconvenience :(</h6>
+          <h5 class="text-center mt-5 mb-5">It appears that there are no available cars for rental. <br/>Sorry for the inconvenience</h5>
+        </div>
+        <div v-if="homecars.length != 0 && filteredBranch.length == 0">
+          <h5 class="text-center mt-5 mb-5">It appears that there are no available cars for rental. <br/>Sorry for the inconvenience</h5>
         </div>
         <div class="col-10 col-sm-10 col-md-6 col-lg-5 col-xl-4 mt-2 " v-for="(car, i) in filteredBranch" :key="i">
           <div class="card h-100 p-3">

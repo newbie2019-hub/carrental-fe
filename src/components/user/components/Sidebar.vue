@@ -9,7 +9,7 @@
    <a href="" v-on:click.prevent="$bvModal.show('logoutModal')"><i class="bi bi-x-circle"></i> Log-out</a>
 
   <b-modal id="logoutModal" centered title="Logout">
-    <p class="my-4">Are you sure you want to log-out?</p>
+    <p class="">Are you sure you want to log-out?</p>
     <template #modal-footer = {cancel} >
       <b-button variant="primary" @click="cancel()"> Cancel </b-button>
       <b-button variant="danger" v-on:click.prevent="logout" :disabled="isLoading">
@@ -50,6 +50,9 @@
      
      <label for="remarks">Contact Number</label>
      <input v-model="data.contact_number" id="remarks" type="text" class="form-control" placeholder="" aria-label="Last Name">
+     
+     <label for="remarks">Address</label>
+     <input v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address">
 
      <label for="gender">Select Gender</label>
      <select id="gender" v-model="data.gender" class="form-select">
@@ -93,6 +96,7 @@ export default {
         gender: '',
         email: '',
         password: '',
+        address: '',
       },
       fileRecordsForUpload: [],
       fileRecords: [],
@@ -154,6 +158,7 @@ export default {
      this.data.contact_number = this.user.info.contact_number
      this.data.gender = this.user.info.gender
      this.data.email = this.user.email
+     this.data.address = this.user.info.address
    },
    async updateAccount(){
      this.isLoading = true

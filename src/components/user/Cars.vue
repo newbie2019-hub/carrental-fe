@@ -32,14 +32,15 @@
         <thead>
           <tr >
             <th scope="col">Image</th>
-            <th scope="col" >Status</th>
-            <th scope="col" >Brand</th>
-            <th scope="col" >Model</th>
-            <th scope="col" class="text-nowrap">Description</th>
+            <th scope="col">For Rent</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col" class="text-nowrap" style="min-width: 200px">Description</th>
             <th scope="col" class="text-nowrap">Transmission</th>
             <th scope="col">Year</th>
             <th scope="col">Seats</th>
-            <th scope="col" >Branch</th>
+            <th scope="col">Branch</th>
+            <th scope="col" class="text-nowrap">Is Approved</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -65,6 +66,9 @@
             <td>{{car.year}}</td>
             <td>{{car.seats}}</td>
             <td>{{car.branch.name}}</td>
+            <td> <b-badge class="rounded-pill" :class="car.approval_status == 'Approved' ? 'bg-success' : 'bg-danger'">
+                {{car.approval_status}}
+              </b-badge></td>
             <td class="text-nowrap">
              <a v-on:click.prevent="$bvModal.show('updateCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Update</a>
              <a v-on:click.prevent="$bvModal.show('carRateModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Rates</a>

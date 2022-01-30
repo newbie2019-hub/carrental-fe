@@ -11,7 +11,7 @@
    <a href="" v-on:click.prevent="$bvModal.show('logoutModal')"><i class="bi bi-x-circle"></i> Log-out</a>
 
    <b-modal id="logoutModal" centered title="Logout">
-    <p class="my-4">Are you sure you want to log-out?</p>
+    <p class="">Are you sure you want to log-out?</p>
     <template #modal-footer = {cancel} >
       <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
       <b-button size="sm" variant="danger" v-on:click.prevent="logout">

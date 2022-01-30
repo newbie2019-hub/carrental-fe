@@ -55,7 +55,17 @@ export default {
      })
 
      return res;
-   },
+    },
+    async approveCar({commit}, id){
+      const res = await API.put(`admin/cars/approve/${id}`).then(res => {
+ 
+        return res;
+      }).catch(err => {
+       return err.response;
+      })
+ 
+      return res;
+    },
     async getCars({commit}, page){
      const res = await API.get(`/admin/cars?page=${page}`).then(res => {
        commit('SET_CARS', res.data)

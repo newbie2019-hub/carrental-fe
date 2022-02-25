@@ -40,7 +40,7 @@
             }"
             v-model="fileRecords"
           ></VueFileAgent>
-     <small class="text-muted">This will replace your existing image if you have</small>
+     <label class="d-block"><small class="text-muted">This will replace your existing image if you have</small></label>
      <label for="item">First Name</label>
      <input v-model="data.first_name" id="item" type="text" class="form-control" placeholder="" aria-label="First Name">
      

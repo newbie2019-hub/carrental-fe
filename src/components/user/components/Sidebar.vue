@@ -38,9 +38,9 @@
             }"
             v-model="fileRecords"
           ></VueFileAgent>
-     <small class="text-muted">This will replace your existing image if you have</small>
-     <label for="item">First Name</label>
-     <input v-model="data.first_name" id="item" type="text" class="form-control" placeholder="" aria-label="First Name">
+     <label class="d-block"><small class="text-muted">This will replace your existing image if you have</small></label>
+     <label for="firstname">First Name</label>
+     <input v-model="data.first_name" id="firstname" type="text" class="form-control" placeholder="" aria-label="First Name">
      
      <label for="remarks">Middle Name</label>
      <input v-model="data.middle_name" id="remarks" type="text" class="form-control" placeholder="" aria-label="Middle Name">

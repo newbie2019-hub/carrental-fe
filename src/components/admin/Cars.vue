@@ -71,7 +71,7 @@
               </b-badge>
             </td>
             <td class="text-nowrap">
-             <a v-if="car.approval_status != 'Pending'" v-on:click.prevent="$bvModal.show('approveCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Update</a>
+             <a v-if="car.approval_status != 'Pending'" v-on:click.prevent="$bvModal.show('updateCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Update</a>
              <a v-else v-on:click.prevent="$bvModal.show('approveCarModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-success btn-sm me-2" href="">Approve</a>
              <a v-on:click.prevent="$bvModal.show('carRateModal'); id = car.id; carupdate = JSON.parse(JSON.stringify(car));" class="btn btn-primary btn-sm me-2" href="">Rates</a>
              <a v-on:click.prevent="id = car.id; $bvModal.show('deleteCarModal')" class="btn btn-danger btn-sm" href="">Delete</a>
@@ -145,8 +145,8 @@
   </div>
 
   <!-- CAR --->
-  <b-modal id="newCarModal"  scrollable centered title="New Car">
-   <div class="ps-4 pe-4">
+  <b-modal id="newCarModal" scrollable centered title="New Car">
+   <div class="ps-3 pe-3">
     <label for="brand">Image</label>
     <VueFileAgent
             ref="vueFileAgent"
@@ -220,7 +220,7 @@
 
   <!-- UPDATE CAR --->
   <b-modal id="updateCarModal"  scrollable centered title="Update Car">
-   <div class="ps-5 pe-5">
+   <div class="ps-3 pe-3">
     <label for="brand">New Image</label>
     <p class="text-muted"><small>Leave blank if you dont want any changes</small></p>
     <VueFileAgent

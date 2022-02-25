@@ -53,7 +53,11 @@
           </tr>
         </thead>
         <tbody>
-          
+           <tr v-if="rentals.data.length == 0">
+            <td colspan="12" class="text-center">
+              No data found
+            </td>
+          </tr>
           <tr v-for="(rent, i) in rentals.data" :key="i">
             <td>
               <b-badge class="rounded-pill text-center" :class="rent.rental_status == 'finished' ? 'bg-success' : 'bg-secondary'">

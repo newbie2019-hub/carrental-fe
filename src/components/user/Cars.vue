@@ -9,7 +9,7 @@
          <p class="mb-4"><small>Manage your cars below</small></p>
        </div>
        <div class="d-flex flex-column mt-2">
-         <button v-on:click.prevent="$bvModal.show('newCarModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Car</button>
+         <button v-on:click.prevent="$bvModal.show('newCarModal')" class="btn btn-primary"><i class="bi bi-plus"></i>Add Car</button>
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
@@ -32,7 +32,7 @@
         <thead>
           <tr >
             <th scope="col">Image</th>
-            <th scope="col">For Rent</th>
+            <th scope="col" class="text-nowrap">For Rent</th>
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
             <th scope="col" class="text-nowrap" style="min-width: 200px">Description</th>

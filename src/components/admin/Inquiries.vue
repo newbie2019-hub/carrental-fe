@@ -17,15 +17,20 @@
          :table-props="{ bordered: false, striped: false }"
        ></b-skeleton-table>
       <table v-if="!initialLoading" class="table table-hover">
-        <caption>Showing {{inquiry.from}} to {{inquiry.to}} out of {{inquiry.total}} inquiry</caption>
+        <caption>Showing {{inquiry.from ? inquiry.from : '0'}} to {{inquiry.to ? inquiry.to : '0'}} out of {{inquiry.total}} inquiry</caption>
         <thead>
           <tr>
             <th scope="col" >Full Name</th>
-            <th scope="col">Email/Contact</th>
+            <th scope="col">Email or Contact</th>
             <th scope="col">Message</th>
           </tr>
         </thead>
         <tbody>
+          <tr v-if="inquiry.data.length == 0">
+            <td colspan="12" class="text-center pt-3 pb-3">
+              No data found
+            </td>
+          </tr>
           <tr v-for="(inq, i) in inquiry.data" :key="i">
             <td>{{inq.name}}</td>
             <td>{{inq.email}}</td>

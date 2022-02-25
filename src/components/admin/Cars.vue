@@ -9,7 +9,7 @@
          <p class="mb-4"><small>Manage your cars below</small></p>
        </div>
        <div class="d-flex flex-column mt-2">
-         <button v-on:click.prevent="$bvModal.show('newCarModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Car</button>
+         <button v-on:click.prevent="$bvModal.show('newCarModal')" class="btn btn-primary"> Add Car <i class="bi bi-plus"></i></button>
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
@@ -46,6 +46,11 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="cars.data.length == 0">
+            <td colspan="12" class="text-center pt-3 pb-3">
+              No data found
+            </td>
+          </tr>
           <tr v-for="(car, i) in cars.data" :key="i">
             <td>
              <img :src="'https://be-aclc-carrental.herokuapp.com/uploads/'+ car.image" class="w-75" alt="">

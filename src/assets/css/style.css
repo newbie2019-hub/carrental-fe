@@ -255,6 +255,14 @@ nav ul li a:hover{
   background-color: #659adbc2 !important;
 }
 
+.bg-custom-info {
+  background-color: #22aae0 !important;
+}
+
+.bg-custom-warning {
+  background-color: #e6a414 !important;
+}
+
 /**  SCROLL BAR */
 ::-webkit-scrollbar {
  width: 7px;

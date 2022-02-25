@@ -35,7 +35,7 @@
             <th scope="col" class="text-nowrap">For Rent</th>
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
-            <th scope="col" class="text-nowrap" style="min-width: 200px">Description</th>
+            <th scope="col" class="text-nowrap" style="min-width: 190px">Description</th>
             <th scope="col" class="text-nowrap">Transmission</th>
             <th scope="col">Year</th>
             <th scope="col">Seats</th>

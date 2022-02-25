@@ -9,7 +9,7 @@
          <p class="mb-4"><small>Manage your client records below</small></p>
        </div>
        <div class="d-flex flex-column mt-2">
-         <button v-on:click.prevent="$bvModal.show('newClientModal')" class="btn btn-primary"><i class="bi bi-plus"></i> Client</button>
+         <button v-on:click.prevent="$bvModal.show('newClientModal')" class="btn btn-primary"> Add Client <i class="bi bi-plus"></i></button>
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
@@ -32,12 +32,13 @@
         <thead>
           <tr>
             <th scope="col"></th>
-            <th scope="col" class="text-nowrap">First Name</th>
-            <th scope="col" class="text-nowrap">Middle Name</th>
-            <th scope="col" class="text-nowrap">Last Name</th>
-            <th scope="col">Gender</th>
+            <th scope="col" class="text-nowrap">Clients Name</th>
+            <th scope="col" class="text-nowrap">Address</th>
+            <!-- <th scope="col" class="text-nowrap">Middle Name</th>
+            <th scope="col" class="text-nowrap">Last Name</th> -->
             <th scope="col">Email</th>
-            <th scope="col" class="text-nowrap">Contact Number</th>
+            <th scope="col">Gender</th>
+            <th scope="col" class="text-nowrap">Contact</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -46,14 +47,15 @@
             <td>
              <avatar v-if="client != 0" class=" mr-4" :username="client.info.first_name + ' ' + client.info.last_name" :rounded="true" :size="40" :color="'#fff'" :lighten="100"></avatar>
             </td>
-            <td >{{client.info.first_name}}</td>
-            <td>{{client.info.middle_name}}</td>
-            <td>{{client.info.last_name}}</td>
-            <td>{{client.info.gender}}</td>
+            <td class="text-nowrap">{{`${client.info.first_name} ${client.info.last_name}`}}</td>
+            <!-- <td>{{client.info.middle_name}}</td> -->
+            <!-- <td>{{client.info.last_name}}</td> -->
+            <td style="min-width: 150px">{{client.info.address}}</td>
             <td>{{client.email}}</td>
-            <td>{{client.info.contact_number}}</td>
+            <td>{{client.info.gender}}</td>
+            <td class="text-nowrap">{{client.info.contact_number}}</td>
             <td class="text-nowrap">
-             <a v-on:click.prevent="$bvModal.show('updateClientModal'); id=client.id; update_data = JSON.parse(JSON.stringify(client));" class="btn btn-primary btn-sm me-2" href=""><i class="bi bi-pencil"></i> Update</a>
+             <a v-on:click.prevent="$bvModal.show('updateClientModal'); id=client.id; update_data = JSON.parse(JSON.stringify(client));" class="btn btn-primary btn-sm me-2" href=""><i class="bi bi-mouse"></i> Update</a>
              <a v-on:click.prevent="id = client.id; $bvModal.show('deleteModal')" class="btn btn-danger btn-sm" href=""><i class="bi bi-x"></i> Delete</a>
             </td>
           </tr>
@@ -72,23 +74,22 @@
 
   <b-modal id="newClientModal"  scrollable centered title="New Client">
    <div class="row pe-3 ps-3">
-     <h5 class="">Client's Info</h5>
-     <p class="text-muted">Client's personal Info</p>
-     <div class="col mt-2">
+     <h5 class="mb-3">Client's Info</h5>
+     <div class="col mt-1">
       <label for="firstname">First Name</label>
       <input v-model="data.first_name" id="firstname" type="text" class="form-control" placeholder="" aria-label="First name">
      </div>
-     <div class="col mt-2">
+     <div class="col mt-1">
       <label for="middlename">Middle Name</label>
       <input v-model="data.middle_name" id="middlename" type="text" class="form-control" placeholder="" aria-label="Middle name">
      </div>
    </div>
    <div class="row pe-3 ps-3">
-    <div class="col mt-3">
+    <div class="col mt-1">
       <label for="height">Last Name</label>
       <input v-model="data.last_name" id="lastname" type="text" class="form-control" placeholder="" aria-label="Last name">
      </div>
-    <div class="col mt-3">
+    <div class="col mt-1">
      <label for="gender">Select Gender</label>
      <select id="gender" v-model="data.gender" class="form-select">
       <option value="" disabled selected>Select Gender</option>
@@ -98,17 +99,18 @@
     </div>
    </div>
    <div class="row pe-3 ps-3">
-    <div class="col mt-3">
+    <div class="col mt-1">
       <label for="contactnumber">Contact Number</label>
       <input v-model="data.contact_number" id="contactnumber" type="number" class="form-control" placeholder="" aria-label="Contact number">
     </div>
-    <div class="col mt-3">
+    <div class="col mt-1">
+      <label for="address">Address</label>
+      <input v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address">
     </div>
    </div>
 
    <div class="row pe-3 ps-3">
-     <h5 class="mt-3">Login Credentials</h5>
-     <p class="text-muted">Client's Login Info</p>
+     <h5 class="mt-4">Login Credentials</h5>
      <div class="col mt-2">
       <label for="email">Email</label>
       <input v-model="data.email" id="email" type="text" class="form-control" placeholder="" aria-label="Email">
@@ -119,8 +121,8 @@
      </div>
    </div>
    <template #modal-footer = {cancel} >
-     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-     <b-button variant="success" size="sm" v-on:click.prevent="saveClient" :disabled="isLoading">
+     <b-button variant="primary" class="border-0" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" class="border-0" v-on:click.prevent="saveClient" :disabled="isLoading">
        Save Client
      </b-button>
    </template>
@@ -128,23 +130,23 @@
 
   <b-modal id="updateClientModal"  scrollable centered title="Update Client">
    <div class="row pe-3 ps-3">
-     <h5 class="">Client's Info</h5>
-     <p class="text-muted">Client's personal Info</p>
-     <div class="col mt-2">
+     <h5 class="mb-3">Client's Info</h5>
+     <!-- <p class="text-muted">Client's personal Info</p> -->
+     <div class="col mt-1">
       <label for="firstname">First Name</label>
       <input v-model="update_data.info.first_name" id="firstname" type="text" class="form-control" placeholder="" aria-label="First name">
      </div>
-     <div class="col mt-2">
+     <div class="col mt-1">
       <label for="middlename">Middle Name</label>
       <input v-model="update_data.info.middle_name" id="middlename" type="text" class="form-control" placeholder="" aria-label="Middle name">
      </div>
    </div>
    <div class="row pe-3 ps-3">
-    <div class="col mt-3">
+    <div class="col mt-1">
       <label for="height">Last Name</label>
       <input v-model="update_data.info.last_name" id="lastname" type="text" class="form-control" placeholder="" aria-label="Last name">
      </div>
-    <div class="col mt-3">
+    <div class="col mt-1">
      <label for="gender">Select Gender</label>
      <select id="gender" v-model="update_data.info.gender" class="form-select">
       <option value="" disabled selected>Select Gender</option>
@@ -154,28 +156,33 @@
     </div>
    </div>
    <div class="row pe-3 ps-3">
-    <div class="col mt-3">
+    <div class="col mt-1">
       <label for="contactnumber">Contact Number</label>
       <input v-model="update_data.info.contact_number" id="contactnumber" type="number" class="form-control" placeholder="" aria-label="Contact number">
     </div>
-    <div class="col mt-3">
+    <div class="col mt-1">
+      <label for="address">Address</label>
+      <input v-model="update_data.info.address" id="address" type="text" class="form-control" placeholder="" aria-label="Contact number">
     </div>
+    <!-- <div class="col mt-3">
+    </div> -->
    </div>
 
    <div class="row pe-3 ps-3">
-     <h5 class="mt-3">Login Credentials</h5>
-     <p class="text-muted">Client's Login Info</p>
-     <div class="col mt-2">
+     <h5 class="mt-4 mb-2">Login Credentials</h5>
+     <!-- <p class="text-muted">Client's Login Info</p> -->
+     <div class="col mt-1">
       <label for="email">Email</label>
-      <input v-model="update_data.email" id="email" type="text" class="form-control" placeholder="" aria-label="Email">
+      <input disabled v-model="update_data.email" id="email" type="text" class="form-control" placeholder="" aria-label="Email">
      </div>
+     <small class="d-block">Only the user can update its own email address</small>
      <div class="col mt-2">
      
      </div>
    </div>
    <template #modal-footer = {cancel} >
-     <b-button variant="primary" size="sm" @click="cancel()"> Cancel </b-button>
-     <b-button variant="success" size="sm" v-on:click.prevent="updateClient" :disabled="isLoading">
+     <b-button variant="primary" class="border-0" @click="cancel()"> Cancel </b-button>
+     <b-button variant="success" class="border-0" v-on:click.prevent="updateClient" :disabled="isLoading">
        Update Client
      </b-button>
    </template>

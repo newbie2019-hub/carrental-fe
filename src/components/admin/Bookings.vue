@@ -24,6 +24,7 @@
         :table-props="{ bordered: true, striped: true }"
       ></b-skeleton-table> 
       <table class="table table-hover" v-if="!initialLoading">
+        <caption>Total Payment: {{formatCurrency(total)}}</caption>
         <thead>
           <tr>
             <th scope="col" class="text-nowrap">Rental Status</th>
@@ -34,7 +35,7 @@
             <th scope="col" class="text-nowrap">With Driver</th>
             <th scope="col" class="text-nowrap">Payment Type</th>
             <th scope="col" class="text-nowrap">Total Payment</th>
-            <th scope="col" class="text-nowrap">Additional Instructions</th>
+            <th scope="col" class="text-nowrap" style="min-width: 180px">Instructions</th>
             <th scope="col">Status</th>
             <th scope="col" class="text-nowrap">Transaction Date</th>
             <th scope="col" >Actions</th>
@@ -165,7 +166,8 @@ export default {
      data: {
       
      },
-     cash_received: ''
+     cash_received: '',
+     total: 0,
    }
   },
   async mounted(){
@@ -174,8 +176,18 @@ export default {
     await this.$store.dispatch('rental/getPayments')
     await this.$store.dispatch('rental/getRentals', 1);
     this.initialLoading = false
+    this.totalAmount()
   },
   methods: {
+    totalAmount(){
+      let total = 0
+      console.log('hi')
+      this.rentals.data.forEach((data, i) => {
+        total += parseFloat(data.total_payment)
+        console.log(data)
+      })
+      this.total = total
+    },
     async returnedCar(){
       this.isLoading = true
       const {status, data} = await this.$store.dispatch('rental/returnedCar', this.data)
@@ -213,7 +225,9 @@ export default {
     },
 
     async getRentals(page = 1){
+      console.log('hi')
       const res = await this.$store.dispatch('rental/getRentals', page)
+      this.totalAmount()
     },
     showError(data){
      for (const key of Object.keys(data)) {

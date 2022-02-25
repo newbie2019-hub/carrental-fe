@@ -9,7 +9,7 @@
          <p class="mb-4"><small>Manage your car rental branches below</small></p>
        </div>
        <div class="d-flex flex-column mt-2">
-         <button v-on:click.prevent="$bvModal.show('addBranchModal'); data = {name: '', user_id: '', address: ''}" class="btn btn-primary"><i class="bi bi-plus"></i> New Branch</button>
+         <button v-on:click.prevent="$bvModal.show('addBranchModal'); data = {name: '', user_id: '', address: ''}" class="btn btn-primary border-0"> New Branch <i class="bi bi-plus"></i></button>
        </div>
      </div>
      <div class="d-flex justify-content-end mt-2">
@@ -65,12 +65,12 @@
     <div class="row pe-3 ps-3">
      <p class="text-muted">Please fill-in all the fields</p>
      <div class="mt-2">
-      <label for="firstname">Branch Name</label>
+      <label for="branchname">Branch Name</label>
       <input v-model="data.name" id="branchname" type="text" class="form-control" placeholder="" aria-label="Branch Name">
      </div>
-     <div class="mt-2">
-      <label for="middlename">Address</label>
-      <input v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address">
+     <div class="mt-1">
+      <label for="address">Address</label>
+      <textarea v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address"/>
      </div>
      <!-- <div class="mt-2">
       <label for="middlename">Manager</label>
@@ -97,7 +97,7 @@
      </div>
      <div class="mt-2">
       <label for="middlename">Address</label>
-      <input v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address">
+      <textarea v-model="data.address" id="address" type="text" class="form-control" placeholder="" aria-label="Address" />
      </div>
      <!-- <div class="mt-2">
       <label for="middlename">Manager</label>

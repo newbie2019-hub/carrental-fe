@@ -66,8 +66,8 @@
     </div>
    </div>
     <template #modal-footer = {cancel} >
-      <b-button variant="primary" size="sm" @click="cancel()" :disabled="isLoading"> Cancel </b-button>
-      <b-button variant="success" size="sm" v-on:click.prevent="updateAccount" :disabled="isLoading">
+      <b-button variant="primary" class="border-0" @click="cancel()" :disabled="isLoading"> Cancel </b-button>
+      <b-button variant="success" class="border-0" v-on:click.prevent="updateAccount" :disabled="isLoading">
         Update
       </b-button>
     </template>

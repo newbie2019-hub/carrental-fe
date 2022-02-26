@@ -26,7 +26,7 @@
       <div class="d-flex flex-column h-100 align-items-center justify-content-center">
         <h1 class="w-75 heading text-white text-center">Roads were made for journeys, not destinations</h1>
         <p class="text-white mt-3 mb-3">your Budget-Friendly Car Rental</p>
-        <button class="btn btn-outline-light rounded-pill mt-5 p-3 d-flex align-items-center justify-content-center">LEARN MORE</button>
+        <button class="btn btn-outline-light pt-2 pb-2 rounded-pill mt-5">Learn More</button>
       </div>
       <div class="credit">
         <img src="@/assets/images/credit_card.png" alt="">

@@ -241,6 +241,7 @@ export default {
         const res = await this.$store.dispatch('client/payRental', data)
         if(res.status == 200){
          this.$toast.success('Payment successful')
+         window.open(res.data.res.receipt_url, '_blank')
          this.$router.push('/')
          setTimeout(() => {
            this.$toast.success('You can check your transactions on your account')
